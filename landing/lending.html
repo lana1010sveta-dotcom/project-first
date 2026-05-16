@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Цветочная лавка — искусство дарить эмоции</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #06070a;
+      --surface:  #0e0c10;
+      --rose-1:   #f2c4d0;
+      --rose-2:   #d4728f;
+      --rose-3:   #8f3252;
+      --gold:     #d4a847;
+      --gold-lt:  #f0d898;
+      --text:     #f0ebe8;
+      --muted:    #7a6b72;
+      --line:     rgba(212,114,143,.18);
+      --card-bg:  rgba(255,255,255,.03);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── Ambient background ── */
+    .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px); opacity: .6;
+    }
+    .orb-1 { width: 600px; height: 600px; top: -150px; left: -150px;
+      background: radial-gradient(circle, rgba(143,50,82,.18) 0%, transparent 70%);
+      animation: driftA 20s ease-in-out infinite; }
+    .orb-2 { width: 500px; height: 500px; bottom: 10%; right: -100px;
+      background: radial-gradient(circle, rgba(212,114,143,.12) 0%, transparent 70%);
+      animation: driftB 25s ease-in-out infinite; }
+    .orb-3 { width: 400px; height: 400px; top: 50%; left: 40%;
+      background: radial-gradient(circle, rgba(212,168,71,.07) 0%, transparent 70%);
+      animation: driftA 30s ease-in-out infinite reverse; }
+
+    @keyframes driftA {
+      0%,100% { transform: translate(0,0); }
+      33%     { transform: translate(40px,-50px); }
+      66%     { transform: translate(-30px,30px); }
+    }
+    @keyframes driftB {
+      0%,100% { transform: translate(0,0); }
+      40%     { transform: translate(-50px,30px); }
+      70%     { transform: translate(20px,-20px); }
+    }
+
+    /* ── Layout wrapper ── */
+    .wrap { position: relative; z-index: 1; }
+
+    section { padding: 90px 24px; }
+    .container { max-width: 1080px; margin: 0 auto; }
+
+    /* ── Section label ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .68rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--rose-2); margin-bottom: 16px; opacity: .9;
+    }
+    .section-label::before, .section-label::after {
+      content: ''; display: block; width: 24px; height: 1px;
+      background: var(--rose-2); opacity: .5;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 0 auto; max-width: 300px;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--line); }
+    .divider-icon { color: var(--rose-2); opacity: .6; font-size: 1rem; }
+
+    /* ════════════════════════════
+       HERO
+    ════════════════════════════ */
+    #hero {
+      min-height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--rose-1); opacity: .8;
+      margin-bottom: 28px;
+      background: rgba(212,114,143,.06);
+      animation: fadeUp .8s ease both;
+    }
+    .hero-badge svg { width: 14px; height: 14px; }
+
+    .hero-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2.8rem, 8vw, 5.2rem);
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: .01em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--rose-1) 0%, var(--rose-2) 45%, var(--rose-3) 80%, var(--gold) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeUp .8s .1s ease both;
+      filter: drop-shadow(0 0 30px rgba(212,114,143,.3));
+    }
+
+    .hero-sub {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: clamp(.95rem, 2vw, 1.15rem);
+      color: var(--rose-1);
+      opacity: .65;
+      margin-bottom: 32px;
+      animation: fadeUp .8s .2s ease both;
+    }
+
+    .hero-desc {
+      max-width: 640px; margin: 0 auto 48px;
+      font-size: clamp(.9rem, 1.5vw, 1.05rem);
+      color: #c8b8bc;
+      line-height: 1.8;
+      animation: fadeUp .8s .3s ease both;
+    }
+
+    .hero-cta { animation: fadeUp .8s .4s ease both; }
+
+    /* ── CTA Button ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 38px;
+      border-radius: 4px;
+      border: none;
+      background: linear-gradient(135deg, var(--rose-3), var(--rose-2));
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 24px rgba(143,50,82,.45), 0 8px 32px rgba(0,0,0,.4);
+      animation: ctaPulse 2.8s ease-in-out infinite;
+      transition: transform .2s, box-shadow .2s;
+    }
+    @keyframes ctaPulse {
+      0%,100% { box-shadow: 0 0 20px rgba(143,50,82,.4), 0 8px 32px rgba(0,0,0,.4); }
+      50%      { box-shadow: 0 0 42px rgba(212,114,143,.6), 0 8px 40px rgba(0,0,0,.45); }
+    }
+    .btn-primary::before {
+      content: ''; position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+      transition: left .5s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); }
+    .btn-primary:hover::before { left: 100%; }
+    .btn-primary:active { transform: scale(.97); }
+    .btn-primary svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .hero-scroll {
+      margin-top: 60px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      animation: fadeUp .8s .6s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--rose-2), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%,100% { opacity: .3; transform: scaleY(1); }
+      50%      { opacity: .8; transform: scaleY(1.15); }
+    }
+
+    /* ════════════════════════════
+       FEATURES (3 карточки)
+    ════════════════════════════ */
+    #features { background: linear-gradient(180deg, transparent, rgba(143,50,82,.04), transparent); }
+    #features .container { text-align: center; }
+
+    .section-title {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--rose-1), var(--rose-2));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-desc {
+      color: var(--muted); font-size: .95rem; margin-bottom: 56px;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 36px 28px;
+      text-align: left;
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .feat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose-2), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .feat-card:hover { transform: translateY(-6px); border-color: rgba(212,114,143,.35); box-shadow: 0 20px 50px rgba(0,0,0,.3), 0 0 30px rgba(143,50,82,.12); }
+    .feat-card:hover::before { opacity: 1; }
+
+    .feat-icon {
+      width: 52px; height: 52px; border-radius: 3px;
+      border: 1px solid var(--line);
+      background: rgba(212,114,143,.08);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .feat-icon svg { width: 24px; height: 24px; color: var(--rose-2); }
+    .feat-num {
+      position: absolute; top: 24px; right: 24px;
+      font-family: Georgia, serif; font-size: .7rem;
+      color: var(--muted); opacity: .5; letter-spacing: .1em;
+    }
+    .feat-title {
+      font-family: Georgia, serif; font-style: italic;
+      font-size: 1.2rem; font-weight: 400;
+      color: var(--rose-1); margin-bottom: 12px;
+    }
+    .feat-text { font-size: .88rem; color: #a89298; line-height: 1.75; }
+    .feat-guarantee {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px; font-size: .75rem; color: var(--gold);
+      letter-spacing: .05em;
+    }
+    .feat-guarantee svg { width: 14px; height: 14px; }
+
+    /* ════════════════════════════
+       FOR WHOM
+    ════════════════════════════ */
+    #audience { text-align: center; }
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .aud-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 28px 22px;
+      text-align: left;
+      transition: transform .3s, border-color .3s;
+    }
+    .aud-card:hover { transform: translateY(-4px); border-color: rgba(212,114,143,.3); }
+    .aud-icon {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 16px;
+    }
+    .aud-title {
+      font-family: Georgia, serif; font-style: italic;
+      font-size: 1rem; color: var(--rose-1); margin-bottom: 8px;
+    }
+    .aud-text { font-size: .83rem; color: var(--muted); line-height: 1.7; }
+
+    /* ════════════════════════════
+       WHY BENEFICIAL
+    ════════════════════════════ */
+    #why { background: linear-gradient(180deg, transparent, rgba(143,50,82,.04), transparent); }
+    #why .container { text-align: center; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .why-item {
+      padding: 30px 24px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--card-bg);
+      text-align: left;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: border-color .3s, transform .3s;
+    }
+    .why-item:hover { border-color: rgba(212,168,71,.3); transform: translateY(-4px); }
+    .why-item-head {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .why-badge {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 3px; border: 1px solid rgba(212,168,71,.2);
+      background: rgba(212,168,71,.07);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .why-badge svg { width: 18px; height: 18px; color: var(--gold); }
+    .why-title { font-size: .9rem; font-weight: 600; color: var(--gold-lt); letter-spacing: .02em; }
+    .why-text { font-size: .85rem; color: var(--muted); line-height: 1.75; }
+
+    /* ════════════════════════════
+       CTA SECTION
+    ════════════════════════════ */
+    #cta {
+      text-align: center;
+      padding: 100px 24px;
+    }
+    #cta .container {
+      max-width: 660px;
+    }
+    .cta-eyebrow {
+      font-family: Georgia, serif; font-style: italic;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 400;
+      background: linear-gradient(135deg, var(--rose-1), var(--rose-2), var(--gold));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+    .cta-sub {
+      font-size: .95rem; color: var(--muted);
+      margin-bottom: 40px; line-height: 1.7;
+    }
+
+    /* Messenger icons */
+    .messengers {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-top: 36px;
+    }
+    .msg-label { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+    .msg-btn {
+      width: 46px; height: 46px;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+      background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: var(--muted);
+      transition: all .3s cubic-bezier(.34,1.4,.64,1);
+      position: relative; overflow: hidden;
+    }
+    .msg-btn svg { position: relative; z-index: 1; width: 21px; height: 21px; }
+    .msg-btn::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .3s; }
+
+    .msg-btn.tg::before  { background: linear-gradient(135deg,#2aabee,#1a8dc0); }
+    .msg-btn.tg:hover    { border-color: #2aabee; color: #fff; transform: translateY(-5px); box-shadow: 0 10px 24px rgba(42,171,238,.3); }
+    .msg-btn.tg:hover::before { opacity: 1; }
+
+    .msg-btn.ig::before  { background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); }
+    .msg-btn.ig:hover    { border-color: #c13584; color: #fff; transform: translateY(-5px); box-shadow: 0 10px 24px rgba(193,53,132,.3); }
+    .msg-btn.ig:hover::before { opacity: 1; }
+
+    .msg-btn.wa::before  { background: linear-gradient(135deg,#25d366,#128c7e); }
+    .msg-btn.wa:hover    { border-color: #25d366; color: #fff; transform: translateY(-5px); box-shadow: 0 10px 24px rgba(37,211,102,.3); }
+    .msg-btn.wa:hover::before { opacity: 1; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid var(--line);
+      font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted); opacity: .4;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* Scroll-triggered fade-in */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      section { padding: 64px 18px; }
+      #hero   { padding: 90px 18px 64px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .audience-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .messengers { flex-wrap: wrap; }
+    }
+    @media (max-width: 420px) {
+      .audience-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM8 14s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+        Авторская флористика
+      </div>
+
+      <h1 class="hero-title">Цветочная лавка</h1>
+      <p class="hero-sub">Искусство дарить эмоции в каждом лепестке</p>
+
+      <p class="hero-desc">
+        Мы верим, что цветы — это самый искренний способ выразить то, что сложно сказать словами. «Цветочная лавка» — это уютная студия авторской флористики, где каждый букет оформлен как произведение искусства. Мы отошли от шаблонных решений в пользу природной эстетики и безупречного сервиса. Мы не просто продаём цветы — мы помогаем создавать уникальные моменты для тех, кто вам дорог.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#cta" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          Заказать букет
+        </a>
+      </div>
+
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <span>Узнать больше</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FEATURES ═══════════════ -->
+  <section id="features">
+    <div class="container">
+      <div class="section-label">Наши преимущества</div>
+      <h2 class="section-title">Почему выбирают нас</h2>
+      <p class="section-desc">Три обещания, которые мы выполняем для каждого клиента</p>
+
+      <div class="features-grid">
+
+        <!-- 1 -->
+        <div class="feat-card reveal">
+          <span class="feat-num">01</span>
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="feat-title">Гарантия свежести</h3>
+          <p class="feat-text">Работаем напрямую с проверенными поставщиками и принимаем поставки каждые два дня. Каждый букет собирается в специальном аквабоксе и сопровождается инструктажей по уходу. Цветы радуют получателя от 7 дней — или мы заменим букет.</p>
+          <span class="feat-guarantee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Гарантия 7 дней или замена
+          </span>
+        </div>
+
+        <!-- 2 -->
+        <div class="feat-card reveal">
+          <span class="feat-num">02</span>
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <h3 class="feat-title">Авторский стиль и эксклюзивность</h3>
+          <p class="feat-text">Никаких скучных упаковок и шаблонных роз. Наши флористы следят за мировыми тенденциями: протеины, эвкалипт, пионовидные розы, сухоцветы. Каждый букет уникален и собирается под конкретного человека — с учётом повода, вкуса и характера.</p>
+          <span class="feat-guarantee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Только авторские композиции
+          </span>
+        </div>
+
+        <!-- 3 -->
+        <div class="feat-card reveal">
+          <span class="feat-num">03</span>
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <h3 class="feat-title">Сервис «Минута в минуту» с фотоотчётом</h3>
+          <p class="feat-text">Ценим ваше время и спокойствие. Доставляем заказ по городу от 60 минут. Перед доставкой пришлём реальное фото готового букета в мессенджер — реальность соответствует ожиданиям на 100%.</p>
+          <span class="feat-guarantee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Доставка от 60 минут
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOR WHOM ═══════════════ -->
+  <section id="audience">
+    <div class="container">
+      <div class="section-label">Для кого</div>
+      <h2 class="section-title">Каждый найдёт своё</h2>
+      <p class="section-desc">«Цветочная лавка» создана для тех, кто ценит красоту и внимание к деталям</p>
+
+      <div class="audience-grid">
+
+        <div class="aud-card reveal">
+          <div class="aud-icon">🌹</div>
+          <h3 class="aud-title">Влюблённые и романтики</h3>
+          <p class="aud-text">Когда хочется сделать сюрприз без повода или признаться в чувствах самым красивым способом.</p>
+        </div>
+
+        <div class="aud-card reveal">
+          <div class="aud-icon">💼</div>
+          <h3 class="aud-title">Работающие профессионалы</h3>
+          <p class="aud-text">Нужно поздравить коллегу, партнёра или близких? Мы возьмём все заботы на себя.</p>
+        </div>
+
+        <div class="aud-card reveal">
+          <div class="aud-icon">🏡</div>
+          <h3 class="aud-title">Ценители эстетики дома</h3>
+          <p class="aud-text">Подписки на цветы для интерьера, которые наполняют ваш дом ароматом и уютом каждую неделю.</p>
+        </div>
+
+        <div class="aud-card reveal">
+          <div class="aud-icon">✨</div>
+          <h3 class="aud-title">Особые события</h3>
+          <p class="aud-text">Свадьбы, юбилеи, корпоративные праздники — там, где важна каждая деталь и превосходный стиль.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ WHY ═══════════════ -->
+  <section id="why">
+    <div class="container">
+      <div class="section-label">Почему это выгодно</div>
+      <h2 class="section-title">Ваша выгода с первого заказа</h2>
+
+      <div class="why-grid">
+
+        <div class="why-item reveal">
+          <div class="why-item-head">
+            <div class="why-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <span class="why-title">Экономия времени</span>
+          </div>
+          <p class="why-text">Удобный каталог и быстрая оплата в 3 клика. Вам не нужно искать магазин и стоять в очередях — всё сделает наш сервис.</p>
+        </div>
+
+        <div class="why-item reveal">
+          <div class="why-item-head">
+            <div class="why-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <span class="why-title">Прозрачное ценообразование</span>
+          </div>
+          <p class="why-text">Премиальный дизайн и сервис по доступной цене. У нас нет скрытых наценок на упаковку или доставку — вы платите только за то, что заказали.</p>
+        </div>
+
+        <div class="why-item reveal">
+          <div class="why-item-head">
+            <div class="why-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <span class="why-title">Программа лояльности</span>
+          </div>
+          <p class="why-text">С каждой покупки возвращаем 7% бонусами на ваш счёт. Копить и тратить их можно уже со второго заказа — радовать близких становится выгоднее с каждым разом.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CTA BOTTOM ═══════════════ -->
+  <section id="cta">
+    <div class="container">
+
+      <div class="divider" style="margin-bottom: 60px;">
+        <div class="divider-line"></div>
+        <span class="divider-icon">✦</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="cta-eyebrow reveal">Готовы создать волшебный момент?</p>
+      <p class="cta-sub reveal">Оставьте заявку — и наш флорист свяжется с вами в течение 5 минут, чтобы обсудить ваш букет мечты.</p>
+
+      <div class="reveal">
+        <a href="#" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Заказать букет сейчас
+        </a>
+      </div>
+
+      <div class="messengers reveal">
+        <span class="msg-label">или напишите нам</span>
+
+        <!-- Telegram -->
+        <a href="#" class="msg-btn tg" title="Telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </a>
+
+        <!-- Instagram -->
+        <a href="#" class="msg-btn ig" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+
+        <!-- WhatsApp -->
+        <a href="#" class="msg-btn wa" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+          </svg>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 &nbsp;·&nbsp; Цветочная лавка &nbsp;·&nbsp; Авторская флористика
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(function(el) { observer.observe(el); });
+</script>
+
+</body>
+</html>
