@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Светлана Николаева — Сайты, приложения и AI-агенты под ключ</title>
+  <meta name="description" content="Разрабатываю сайты, веб-приложения и AI-агентов для малого бизнеса. Поэтапная оплата, сроки от 3 дней, поддержка после запуска.">
+  <meta property="og:title" content="Светлана Николаева — Цифровые системы под ключ">
+  <meta property="og:description" content="Сайты, приложения и AI-агенты. От идеи до запуска за 2–6 недель.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ───────────────────────────────────── */
+    :root {
+      --bg:    #F7F9FC;
+      --bg2:   #FFFFFF;
+      --bg3:   #EEF2F8;
+      --bgd:   #0C1829;  /* dark section (portfolio) */
+      --bgd2:  #111E32;
+
+      /* Aurora palette */
+      --a1: #7C3AED;   /* violet */
+      --a2: #0EA5E9;   /* sky */
+      --a3: #06B6D4;   /* cyan */
+      --a4: #8B5CF6;   /* purple */
+      --grad: linear-gradient(135deg, #7C3AED 0%, #0EA5E9 100%);
+      --grad2: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+
+      /* Text */
+      --tx:    #0F1729;
+      --tx2:   #4B5675;
+      --tx3:   #9BA8BA;
+      --txd:   #F0F4FA;  /* text on dark */
+      --txd2:  #7A8FAA;
+
+      /* Borders */
+      --bdr:   rgba(15,23,41,.07);
+      --bdr2:  rgba(15,23,41,.13);
+      --bdrd:  rgba(255,255,255,.07);
+      --bdrd2: rgba(255,255,255,.13);
+
+      --ok:    #10B981;
+      --fh:    'Onest', sans-serif;
+      --fb:    'Manrope', sans-serif;
+      --r-sm:  8px;
+      --r:     12px;
+      --r-lg:  20px;
+      --r-xl:  28px;
+      --r-2xl: 36px;
+      --r-full: 9999px;
+      --sec-py: 88px;
+      --cmax: 1200px;
+    }
+
+    /* ── RESET ────────────────────────────────────── */
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+    html { scroll-behavior:smooth }
+    body { background:var(--bg); color:var(--tx); font-family:var(--fb); font-size:1rem; line-height:1.65; overflow-x:hidden }
+    h1,h2,h3,h4 { font-family:var(--fh); line-height:1.15; font-weight:700 }
+    a { color:inherit; text-decoration:none }
+    img { max-width:100%; display:block }
+    button { cursor:pointer; border:none; background:none; font-family:inherit; color:inherit }
+
+    /* ── LAYOUT ───────────────────────────────────── */
+    .c { max-width:var(--cmax); margin:0 auto; padding:0 24px }
+    .sec { padding:var(--sec-py) 0 }
+    .sec-head { margin-bottom:3rem }
+    .sec-title { font-size:clamp(2rem,4vw,3rem) }
+    .sec-sub { font-size:1.0625rem; color:var(--tx2); max-width:560px; margin-top:.75rem; font-weight:400 }
+    .sec-label {
+      font-family:var(--fb); font-size:.625rem; font-weight:600;
+      letter-spacing:.2em; text-transform:uppercase; margin-bottom:1rem;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+
+    /* Aurora gradient text */
+    .hl {
+      background:var(--grad); -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    /* On dark sections */
+    .hl-d {
+      background:var(--grad2); -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent; background-clip:text;
+    }
+
+    /* ── BUTTONS ──────────────────────────────────── */
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:14px 28px; border-radius:var(--r-full);
+      font-weight:600; font-size:.9375rem; font-family:var(--fb);
+      transition:transform .2s,box-shadow .2s,opacity .2s;
+      white-space:nowrap; cursor:pointer;
+    }
+    .btn-p { background:var(--grad); color:#fff; box-shadow:0 4px 20px rgba(124,58,237,.25) }
+    .btn-p:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(124,58,237,.38) }
+    .btn-s { background:transparent; border:1.5px solid var(--bdr2); color:var(--tx) }
+    .btn-s:hover { border-color:var(--a1); color:var(--a1); transform:translateY(-2px) }
+    .btn-s-d { background:transparent; border:1.5px solid var(--bdrd2); color:var(--txd) }
+    .btn-s-d:hover { border-color:var(--a2); color:var(--a2); transform:translateY(-2px) }
+    .btn-sm { padding:10px 20px; font-size:.8125rem }
+
+    /* ── CARDS ────────────────────────────────────── */
+    .card {
+      background:var(--bg2); border:1px solid var(--bdr);
+      border-radius:var(--r-xl); padding:1.75rem;
+      box-shadow:0 4px 20px rgba(15,23,41,.05);
+      transition:transform .3s,box-shadow .3s;
+    }
+    .card:hover { transform:translateY(-5px); box-shadow:0 12px 40px rgba(15,23,41,.1) }
+
+    /* ── TAGS ─────────────────────────────────────── */
+    .tag { display:inline-flex; align-items:center; padding:5px 12px; border-radius:var(--r-full); font-size:.6875rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; font-family:var(--fb) }
+    .t-site { background:rgba(14,165,233,.1);  color:#0369A1 }
+    .t-app  { background:rgba(124,58,237,.1);  color:#6D28D9 }
+    .t-ai   { background:rgba(6,182,212,.1);   color:#0E7490 }
+    .t-land { background:rgba(16,185,129,.1);  color:#047857 }
+
+    /* ── REVEAL ───────────────────────────────────── */
+    .rv { opacity:0; transform:translateY(24px); transition:opacity .65s,transform .65s }
+    .rv.on { opacity:1; transform:none }
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    /* ── NAV ──────────────────────────────────────── */
+    .nav { position:fixed; top:0; left:0; right:0; z-index:100; transition:background .3s,box-shadow .3s }
+    .nav.scrolled { background:rgba(247,249,252,.9); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 1px 20px rgba(15,23,41,.07) }
+    .nav-in { display:flex; align-items:center; justify-content:space-between; height:68px }
+    .nav-logo { font-family:var(--fh); font-size:1.0625rem; font-weight:700; display:flex; align-items:center; gap:.5rem }
+    .nav-logo-mark { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--grad) }
+    .nav-links { display:flex; align-items:center; gap:2rem; list-style:none }
+    .nav-links a { color:var(--tx2); font-size:.875rem; transition:color .2s; font-weight:500 }
+    .nav-links a:hover { color:var(--tx) }
+    .nav-acts { display:flex; align-items:center; gap:1rem }
+    .burger { display:none; flex-direction:column; gap:5px; padding:8px }
+    .burger span { display:block; width:22px; height:2px; background:var(--tx); border-radius:2px; transition:transform .3s }
+    .mob-menu { display:none; flex-direction:column; padding:1.5rem; gap:1rem; background:rgba(247,249,252,.97); backdrop-filter:blur(20px); border-top:1px solid var(--bdr); box-shadow:0 8px 32px rgba(15,23,41,.08) }
+    .mob-menu.open { display:flex }
+    .mob-menu a { color:var(--tx2); font-size:1.125rem; padding:.75rem 0; border-bottom:1px solid var(--bdr); font-weight:500 }
+    .mob-menu a:hover { color:var(--tx) }
+
+    /* ── HERO ─────────────────────────────────────── */
+    .hero { min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; background:var(--bg); padding-top:68px }
+    /* Aurora blobs */
+    .ab { position:absolute; border-radius:50%; filter:blur(88px); pointer-events:none }
+    .ab1 { width:640px; height:640px; background:radial-gradient(circle,rgba(124,58,237,.28) 0%,transparent 65%); top:-220px; right:-120px; animation:drift1 9s ease-in-out infinite }
+    .ab2 { width:520px; height:520px; background:radial-gradient(circle,rgba(6,182,212,.22) 0%,transparent 65%); bottom:-160px; left:-100px; animation:drift2 11s ease-in-out infinite }
+    .ab3 { width:380px; height:380px; background:radial-gradient(circle,rgba(16,185,129,.18) 0%,transparent 65%); top:40%; right:35%; animation:drift3 13s ease-in-out infinite }
+    @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(25px,18px)} }
+    @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-18px,24px)} }
+    @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(12px,-20px)} }
+    .hero-in { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; padding:5rem 0 }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.18);
+      border-radius:var(--r-full); padding:6px 14px; font-size:.75rem;
+      color:var(--a1); margin-bottom:1.5rem; font-family:var(--fb); font-weight:500;
+    }
+    .dot-pulse { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--ok); animation:pulse 2s ease-in-out infinite }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.75)} }
+    .hero-h1 { font-size:clamp(2.25rem,4.5vw,3.75rem); font-weight:800; line-height:1.08; margin-bottom:1.5rem; color:var(--tx) }
+    .hero-h1 .w { display:inline-block; opacity:0; transform:translateY(18px) }
+    .hero-h1 .w.on { animation:wapp .48s ease forwards }
+    @keyframes wapp { to { opacity:1; transform:none } }
+    .hero-sub { font-size:1.0625rem; color:var(--tx2); margin-bottom:2rem; line-height:1.75; opacity:0; transform:translateY(12px); transition:opacity .5s .8s,transform .5s .8s }
+    .hero-sub.on { opacity:1; transform:none }
+    .hero-acts { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; opacity:0; transform:translateY(12px); transition:opacity .5s 1s,transform .5s 1s }
+    .hero-acts.on { opacity:1; transform:none }
+    .hero-trust { display:flex; flex-wrap:wrap; gap:1.25rem; opacity:0; transition:opacity .5s 1.2s }
+    .hero-trust.on { opacity:1 }
+    .trust-i { display:flex; align-items:center; gap:.4rem; color:var(--tx2); font-size:.8125rem }
+    .trust-i::before { content:'✓'; font-weight:700; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+
+    /* Hero visual */
+    .hero-vis { display:flex; justify-content:center; align-items:center }
+    .h-frame { position:relative; width:300px; height:380px }
+    /* aurora glow behind frame */
+    .h-frame::before {
+      content:''; position:absolute; inset:-32px; border-radius:50%;
+      background:radial-gradient(circle,rgba(124,58,237,.22) 0%,rgba(14,165,233,.16) 50%,transparent 70%);
+      filter:blur(32px); z-index:0; animation:photo-glow 5s ease-in-out infinite;
+    }
+    @keyframes photo-glow { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
+    .h-ph {
+      position:relative; z-index:1; width:100%; height:100%;
+      background:var(--bg2); border-radius:var(--r-xl);
+      border:1px solid rgba(124,58,237,.15); box-shadow:0 8px 32px rgba(124,58,237,.12);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:1rem; color:var(--tx3); font-size:.875rem;
+    }
+    .h-ph svg { width:60px; height:60px; opacity:.25 }
+    .fc {
+      position:absolute; background:rgba(255,255,255,.88); border:1px solid var(--bdr);
+      border-radius:var(--r-lg); padding:.6rem 1rem; backdrop-filter:blur(16px);
+      font-size:.8rem; white-space:nowrap; z-index:2; color:var(--tx);
+      box-shadow:0 4px 20px rgba(15,23,41,.1);
+    }
+    .fc1 { top:32px; right:-52px; animation:fl 3.2s ease-in-out infinite }
+    .fc2 { bottom:48px; left:-56px; animation:fl 3.2s ease-in-out infinite 1.6s }
+    @keyframes fl { 0%,100%{transform:none} 50%{transform:translateY(-8px)} }
+    .fc-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px }
+    .fc-dot-g { background:var(--ok) }
+    .fc-dot-b { background:var(--a2) }
+
+    /* ── TRUST NUMBERS ────────────────────────────── */
+    .nums { background:var(--bg2); padding:3.5rem 0; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr) }
+    .nums-g { display:grid; grid-template-columns:repeat(4,1fr) }
+    .num-i { text-align:center; padding:1.5rem; border-right:1px solid var(--bdr) }
+    .num-i:last-child { border-right:none }
+    .num-val {
+      font-family:var(--fh); font-size:clamp(2.25rem,4vw,3.25rem); font-weight:800;
+      line-height:1; margin-bottom:.5rem;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .num-lbl { color:var(--tx2); font-size:.875rem }
+
+    /* ── UTP ──────────────────────────────────────── */
+    .utp-g { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem }
+    .utp-icon { font-size:2.25rem; margin-bottom:1rem; display:block }
+    .utp-title { font-size:1.125rem; margin-bottom:.75rem }
+    .utp-txt { color:var(--tx2); line-height:1.75 }
+    .techs { margin-top:3rem; display:flex; flex-wrap:wrap; gap:.625rem; justify-content:center }
+    .tech { background:var(--bg3); border:1px solid var(--bdr); border-radius:var(--r-full); padding:6px 14px; font-size:.8rem; color:var(--tx2); transition:all .2s }
+    .tech:hover { border-color:var(--a1); color:var(--a1); background:rgba(124,58,237,.06) }
+
+    /* ── PORTFOLIO (dark section) ─────────────────── */
+    .pf-bg { background:var(--bgd) }
+    .pf-filters { display:flex; flex-wrap:wrap; gap:.625rem; margin-bottom:2rem }
+    .fil { padding:7px 18px; border-radius:var(--r-full); font-size:.8125rem; font-weight:500; border:1.5px solid var(--bdrd2); color:var(--txd2); transition:all .2s; font-family:var(--fb); background:none; cursor:pointer }
+    .fil:hover,.fil.act { background:var(--grad); border-color:transparent; color:#fff; font-weight:600 }
+    .pf-g { display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:240px; gap:14px }
+    .pc { position:relative; border-radius:var(--r-lg); overflow:hidden; background:var(--bgd2); border:1px solid var(--bdrd); transition:transform .3s,box-shadow .3s }
+    .pc:hover { transform:translateY(-5px); box-shadow:0 16px 48px rgba(0,0,0,.4) }
+    .pc.feat { grid-column:span 2; grid-row:span 2; border-color:rgba(124,58,237,.25) }
+    .pc.wide { grid-column:span 2 }
+    .pp { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#111E32 0%,#0a1628 100%); color:rgba(255,255,255,.2) }
+    .pov { position:absolute; inset:0; background:linear-gradient(to top,rgba(12,24,41,.98) 0%,rgba(12,24,41,.3) 65%,transparent 100%); padding:1.5rem; display:flex; flex-direction:column; justify-content:flex-end; opacity:0; transition:opacity .3s }
+    .pc:hover .pov,.pc.feat .pov { opacity:1 }
+    .p-tag { position:absolute; top:1rem; right:1rem }
+    .p-title { font-family:var(--fh); font-weight:700; color:#fff; font-size:.875rem; margin-bottom:.4rem }
+    .pc.feat .p-title { font-size:1.125rem }
+    .p-meta { font-size:.8rem; color:rgba(255,255,255,.55); margin-bottom:.35rem }
+    .p-res { font-size:.8rem; color:#3DFFA8; font-weight:600 }
+    .pf-cta { text-align:center; margin-top:3rem }
+    .pf-cta p { color:var(--txd2); margin-bottom:1rem }
+
+    /* ── SERVICES ─────────────────────────────────── */
+    .srv-g { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin-bottom:3rem }
+    .sc { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-xl); padding:1.75rem; display:flex; flex-direction:column; gap:1rem; box-shadow:0 4px 16px rgba(15,23,41,.04); transition:transform .3s,box-shadow .3s }
+    .sc:hover { transform:translateY(-5px); box-shadow:0 12px 36px rgba(15,23,41,.09) }
+    .sc.feat-s { background:var(--bg2); border:0; position:relative }
+    /* gradient border via pseudo */
+    .sc.feat-s::before { content:''; position:absolute; inset:-1.5px; border-radius:calc(var(--r-xl) + 1.5px); background:var(--grad); z-index:-1 }
+    .sc-icon { font-size:1.875rem }
+    .sc-title { font-size:1.0625rem }
+    .sc-desc { color:var(--tx2); font-size:.9rem; line-height:1.7; flex-grow:1 }
+    .sc-price { font-family:var(--fh); font-size:1.5rem; font-weight:800; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .sc-term { font-size:.8rem; color:var(--tx3) }
+    /* Value stack */
+    .vs { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-2xl); padding:2.25rem; max-width:680px; margin:0 auto; box-shadow:0 8px 32px rgba(15,23,41,.07) }
+    .vs-title { font-size:1.375rem; margin-bottom:1.5rem; text-align:center }
+    .vs-list { list-style:none; margin-bottom:1.5rem }
+    .vs-item { display:flex; justify-content:space-between; padding:.75rem 0; border-bottom:1px solid var(--bdr); font-size:.9375rem }
+    .vs-item:last-child { border-bottom:none }
+    .vs-item span:last-child { color:var(--tx2) }
+    .vs-total { display:flex; justify-content:space-between; align-items:baseline; padding:.75rem 0; border-top:1px solid var(--bdr2); font-weight:600 }
+    .vs-old { text-decoration:line-through; color:var(--tx3); font-size:.9375rem }
+    .vs-new { font-family:var(--fh); font-size:1.875rem; font-weight:800; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .vs-cta { text-align:center; margin-top:1.5rem }
+    .guar { display:flex; flex-wrap:wrap; justify-content:center; gap:1.5rem; margin-top:3rem }
+    .guar-i { display:flex; align-items:center; gap:.625rem; color:var(--tx2); font-size:.9rem }
+
+    /* ── PROCESS ──────────────────────────────────── */
+    .proc-g { position:relative; display:grid; grid-template-columns:repeat(5,1fr); gap:1rem }
+    .proc-g::before { content:''; position:absolute; top:25px; left:calc(10% + 16px); right:calc(10% + 16px); height:1.5px; background:linear-gradient(90deg,var(--a1),var(--a2),transparent) }
+    .ps { position:relative; text-align:center; padding-top:.75rem }
+    .ps-num {
+      width:50px; height:50px; border-radius:50%;
+      background:var(--grad); color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:1rem; margin:0 auto 1rem; position:relative; z-index:1;
+      font-family:var(--fh); box-shadow:0 4px 16px rgba(124,58,237,.3);
+    }
+    .ps-title { font-size:.875rem; margin-bottom:.4rem; font-weight:600 }
+    .ps-desc { font-size:.8rem; color:var(--tx2); line-height:1.6 }
+    .ps-time { display:inline-block; margin-top:.5rem; font-size:.7rem; color:var(--a1); font-weight:500 }
+
+    /* ── REVIEWS ──────────────────────────────────── */
+    .rv-bg { background:var(--bg3) }
+    .rv-wrap { overflow:hidden }
+    .rv-track { display:flex; transition:transform .4s ease }
+    .rv-card { min-width:100%; padding:1rem }
+    .rv-inner { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-2xl); padding:2.25rem; max-width:780px; margin:0 auto; box-shadow:0 8px 32px rgba(15,23,41,.06) }
+    .rv-stars { font-size:1.125rem; margin-bottom:1rem; letter-spacing:.1em; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .rv-text { font-size:1.0625rem; line-height:1.8; color:var(--tx2); margin-bottom:1.5rem; font-style:italic }
+    .rv-auth { display:flex; align-items:center; gap:1rem }
+    .rv-photo { width:48px; height:48px; border-radius:50%; background:var(--grad); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.9375rem; flex-shrink:0; font-family:var(--fh) }
+    .rv-name { font-size:.9375rem; font-weight:600 }
+    .rv-role { font-size:.8rem; color:var(--tx2) }
+    .rv-ctrl { display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2rem }
+    .rv-btn { width:44px; height:44px; border-radius:50%; border:1.5px solid var(--bdr2); display:flex; align-items:center; justify-content:center; color:var(--tx2); transition:all .2s; cursor:pointer }
+    .rv-btn:hover { border-color:var(--a1); color:var(--a1); background:rgba(124,58,237,.06) }
+    .rv-dots { display:flex; gap:8px }
+    .rv-dot { width:8px; height:8px; border-radius:50%; background:var(--bdr2); cursor:pointer; transition:background .2s,width .2s }
+    .rv-dot.on { background:var(--grad); width:24px; border-radius:var(--r-full) }
+
+    /* ── ABOUT ────────────────────────────────────── */
+    .ab-in { display:grid; grid-template-columns:1fr 1.5fr; gap:4rem; align-items:center }
+    .ab-frame { position:relative; aspect-ratio:4/5 }
+    /* aurora glow */
+    .ab-frame::before { content:''; position:absolute; inset:-24px; border-radius:50%; background:radial-gradient(circle,rgba(124,58,237,.18) 0%,rgba(14,165,233,.12) 50%,transparent 70%); filter:blur(28px); z-index:0 }
+    .ab-ph { position:relative; z-index:1; width:100%; min-height:360px; background:var(--bg2); border-radius:var(--r-xl); border:1px solid rgba(124,58,237,.12); box-shadow:0 8px 32px rgba(124,58,237,.1); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.75rem; color:var(--tx3); font-size:.875rem }
+    .ab-ph svg { width:72px; height:72px; opacity:.2 }
+    .ab-h2 { font-size:clamp(1.75rem,3vw,2.5rem); font-weight:800; margin-bottom:1.25rem }
+    .ab-p { color:var(--tx2); line-height:1.8; margin-bottom:1rem }
+    .ab-soc { display:flex; gap:.75rem; margin-top:1.5rem }
+    .soc-btn { display:flex; align-items:center; gap:.5rem; padding:9px 16px; border-radius:var(--r-full); border:1.5px solid var(--bdr2); color:var(--tx2); font-size:.875rem; transition:all .2s }
+    .soc-btn:hover { border-color:var(--a1); color:var(--a1); background:rgba(124,58,237,.05) }
+
+    /* ── FAQ ──────────────────────────────────────── */
+    .faq-bg { background:var(--bg2) }
+    .faq-list { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:.5rem }
+    .faq-item { background:var(--bg); border:1px solid var(--bdr); border-radius:var(--r-lg); overflow:hidden; transition:border-color .2s,box-shadow .2s }
+    .faq-item.open { border-color:rgba(124,58,237,.2); box-shadow:0 4px 20px rgba(124,58,237,.07) }
+    .faq-q { width:100%; text-align:left; padding:1.125rem 1.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; font-weight:500; font-size:.9375rem; color:var(--tx); transition:color .2s }
+    .faq-q:hover { color:var(--a1) }
+    .faq-ic { width:22px; height:22px; border-radius:50%; border:1.5px solid var(--bdr2); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .3s,border-color .2s,background .2s; font-size:.75rem; color:var(--tx2) }
+    .faq-item.open .faq-ic { transform:rotate(45deg); background:var(--grad); border-color:transparent; color:#fff }
+    .faq-ans { max-height:0; overflow:hidden; transition:max-height .35s ease }
+    .faq-item.open .faq-ans { max-height:300px }
+    .faq-ans-in { padding:0 1.5rem 1.25rem; color:var(--tx2); line-height:1.8 }
+
+    /* ── CONTACT ──────────────────────────────────── */
+    .ct-in { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start }
+    .ct-title { font-size:clamp(1.875rem,3.5vw,2.75rem); font-weight:800; margin-bottom:.875rem }
+    .ct-sub { color:var(--tx2); line-height:1.7; margin-bottom:2rem }
+    .ct-chs { display:flex; flex-direction:column; gap:.625rem }
+    .ch { display:flex; align-items:center; gap:.75rem; padding:1rem 1.25rem; background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-lg); font-size:.9375rem; transition:all .2s; box-shadow:0 2px 12px rgba(15,23,41,.04) }
+    .ch:hover { border-color:rgba(124,58,237,.25); transform:translateX(4px); box-shadow:0 4px 20px rgba(124,58,237,.08) }
+    .ch-icon { font-size:1.25rem; width:34px; text-align:center }
+    .form-box { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-2xl); padding:2rem; box-shadow:0 8px 32px rgba(15,23,41,.06) }
+    .fg { margin-bottom:1rem }
+    .flbl { display:block; font-size:.625rem; font-weight:600; color:var(--tx2); margin-bottom:.5rem; letter-spacing:.16em; text-transform:uppercase }
+    .fi,.fta { width:100%; background:var(--bg); border:1.5px solid var(--bdr); border-radius:var(--r); padding:11px 14px; color:var(--tx); font-family:var(--fb); font-size:.9375rem; outline:none; transition:border-color .2s,box-shadow .2s }
+    .fi:focus,.fta:focus { border-color:var(--a1); box-shadow:0 0 0 3px rgba(124,58,237,.1) }
+    .fta { resize:vertical; min-height:96px }
+    .fi::placeholder,.fta::placeholder { color:var(--tx3) }
+    .fck-w { display:flex; align-items:flex-start; gap:.75rem; margin-bottom:1.5rem }
+    .fck { width:17px; height:17px; margin-top:2px; flex-shrink:0; accent-color:var(--a1) }
+    .fck-lbl { font-size:.8rem; color:var(--tx2); line-height:1.5 }
+    .fck-lbl a { color:var(--a1); text-decoration:underline }
+    .f-sub { width:100%; justify-content:center }
+    .f-ok { display:none; text-align:center; padding:2rem }
+    .f-ok-ic { font-size:2.5rem; margin-bottom:1rem }
+    .f-ok-t { font-size:1.25rem; font-weight:700; margin-bottom:.75rem }
+    .f-ok-s { color:var(--tx2) }
+    .f-guar { text-align:center; margin-top:1rem; font-size:.75rem; color:var(--tx3) }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    .ft { background:var(--tx); padding:4rem 0 2rem; color:var(--txd) }
+    .ft-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:2rem; margin-bottom:3rem }
+    .ft-logo { font-family:var(--fh); font-size:1.125rem; font-weight:700; margin-bottom:.75rem; display:flex; align-items:center; gap:.5rem }
+    .ft-logo-mark { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--grad) }
+    .ft-tag { color:var(--txd2); font-size:.875rem; line-height:1.65; margin-bottom:1.5rem }
+    .ft-soc { display:flex; gap:.625rem }
+    .ft-si { width:38px; height:38px; border-radius:50%; border:1px solid var(--bdrd); display:flex; align-items:center; justify-content:center; transition:border-color .2s,color .2s }
+    .ft-si:hover { border-color:var(--a2); color:var(--a2) }
+    .ft-col-t { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--txd2); margin-bottom:1.25rem; font-weight:600 }
+    .ft-lks { list-style:none; display:flex; flex-direction:column; gap:.75rem }
+    .ft-lks li a { color:var(--txd2); font-size:.875rem; transition:color .2s }
+    .ft-lks li a:hover { color:var(--txd) }
+    .ft-bot { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; padding-top:1.5rem; border-top:1px solid var(--bdrd) }
+    .ft-leg { color:rgba(255,255,255,.3); font-size:.75rem; line-height:1.6 }
+    .ft-leg-lks { display:flex; gap:1rem; margin-top:.25rem }
+    .ft-leg-lks a { color:rgba(255,255,255,.3); font-size:.75rem; text-decoration:underline; transition:color .2s }
+    .ft-leg-lks a:hover { color:var(--txd2) }
+    .ft-copy { color:rgba(255,255,255,.3); font-size:.75rem; text-align:right }
+
+    /* ── SCROLL TOP ───────────────────────────────── */
+    .st { position:fixed; bottom:32px; right:32px; width:46px; height:46px; border-radius:50%; background:var(--grad); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.125rem; font-weight:700; opacity:0; pointer-events:none; transition:opacity .3s,transform .2s; z-index:50; box-shadow:0 4px 16px rgba(124,58,237,.35) }
+    .st.on { opacity:1; pointer-events:auto }
+    .st:hover { transform:translateY(-3px) }
+
+    /* ── REDUCED MOTION ───────────────────────────── */
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media(max-width:768px){
+      :root{--sec-py:64px}
+      .nav-links,.nav-acts .btn:not(.burger-cta){display:none}
+      .burger{display:flex}
+      .hero-in{grid-template-columns:1fr;text-align:center;padding:3.5rem 0}
+      .hero-vis{order:-1}
+      .h-frame{width:220px;height:280px}
+      .fc1{right:-8px}.fc2{left:-8px}
+      .hero-acts,.hero-trust{justify-content:center}
+      .nums-g{grid-template-columns:repeat(2,1fr)}
+      .num-i{border-right:none;border-bottom:1px solid var(--bdr)}
+      .num-i:nth-last-child(-n+2){border-bottom:none}
+      .utp-g{grid-template-columns:1fr}
+      .pf-g{grid-template-columns:repeat(2,1fr);grid-auto-rows:200px}
+      .pc.feat,.pc.wide{grid-column:span 2}
+      .pov{opacity:1}
+      .srv-g{grid-template-columns:repeat(2,1fr)}
+      .proc-g{grid-template-columns:1fr;gap:1.5rem}
+      .proc-g::before{display:none}
+      .ps{display:flex;align-items:flex-start;gap:1rem;text-align:left;padding-top:0}
+      .ps-num{margin:0;flex-shrink:0}
+      .ab-in{grid-template-columns:1fr}
+      .ab-wrap{max-width:260px;margin:0 auto}
+      .ct-in{grid-template-columns:1fr}
+      .ft-top{grid-template-columns:1fr 1fr}
+      .ft-brand{grid-column:span 2}
+      .ft-bot{flex-direction:column;text-align:center}
+      .ft-copy,.ft-leg-lks{text-align:center;justify-content:center}
+    }
+    @media(max-width:640px){
+      .srv-g{grid-template-columns:1fr}
+      .pf-g{grid-template-columns:1fr;grid-auto-rows:auto}
+      .pc{min-height:200px}
+      .pc.feat,.pc.wide{grid-column:span 1;grid-row:span 1}
+      .ft-top{grid-template-columns:1fr}
+      .ft-brand{grid-column:span 1}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="c">
+    <nav class="nav-in">
+      <a href="#" class="nav-logo"><span class="nav-logo-mark"></span> Svetlana Dev</a>
+      <ul class="nav-links">
+        <li><a href="#portfolio">Портфолио</a></li>
+        <li><a href="#services">Услуги</a></li>
+        <li><a href="#contact">Контакт</a></li>
+      </ul>
+      <div class="nav-acts">
+        <a href="https://t.me/your_username" class="btn btn-p btn-sm burger-cta" target="_blank" rel="noopener">Написать →</a>
+        <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </div>
+  <div class="mob-menu" id="mob">
+    <a href="#portfolio">Портфолио</a>
+    <a href="#services">Услуги</a>
+    <a href="#process">Как работаю</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contact">Контакт</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="ab ab1"></div>
+  <div class="ab ab2"></div>
+  <div class="ab ab3"></div>
+  <div class="c">
+    <div class="hero-in">
+      <div class="hero-cnt">
+        <div class="hero-badge"><span class="dot-pulse"></span> Доступна для новых проектов</div>
+        <h1 class="hero-h1" id="h1">Строю цифровые системы, которые работают вместо вас</h1>
+        <p class="hero-sub" id="hsub">Сайты, приложения и AI-агенты под ключ —<br>от идеи до запуска за 2–6 недель</p>
+        <div class="hero-acts" id="hacts">
+          <a href="https://t.me/your_username" class="btn btn-p" target="_blank" rel="noopener">→ Написать в Telegram</a>
+          <a href="#portfolio" class="btn btn-s">Посмотреть работы ↓</a>
+        </div>
+        <div class="hero-trust" id="htr">
+          <span class="trust-i">50+ проектов</span>
+          <span class="trust-i">Поэтапная оплата</span>
+          <span class="trust-i">AI-интеграция</span>
+          <span class="trust-i">Поддержка после</span>
+        </div>
+      </div>
+      <div class="hero-vis">
+        <div class="h-frame">
+          <div class="h-ph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Ваше фото</span>
+          </div>
+          <div class="fc fc1"><span class="fc-dot fc-dot-g"></span> Проект запущен 🚀</div>
+          <div class="fc fc2"><span class="fc-dot fc-dot-b"></span> AI-агент готов</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST NUMBERS -->
+<section class="nums" id="nums">
+  <div class="c">
+    <div class="nums-g">
+      <div class="num-i rv"><div class="num-val" data-to="50" data-sfx="+">0</div><div class="num-lbl">завершённых проектов</div></div>
+      <div class="num-i rv d1"><div class="num-val" data-to="3" data-sfx="+">0</div><div class="num-lbl">лет в разработке</div></div>
+      <div class="num-i rv d2"><div class="num-val" data-to="95" data-sfx="%">0</div><div class="num-lbl">довольных клиентов</div></div>
+      <div class="num-i rv d3"><div class="num-val" style="-webkit-text-fill-color:unset;color:var(--a1)">24ч</div><div class="num-lbl">время ответа</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- UTP -->
+<section class="sec" id="utp">
+  <div class="c">
+    <div class="sec-head rv">
+      <div class="sec-label">/ 01 — почему я</div>
+      <h2 class="sec-title">Что вы получаете,<br>когда работаете <span class="hl">со мной</span></h2>
+    </div>
+    <div class="utp-g">
+      <div class="card rv">
+        <span class="utp-icon">⚡</span>
+        <h3 class="utp-title">Быстро</h3>
+        <p class="utp-txt">Запуск за 2–6 недель, не за полгода. Работаю поэтапно с промежуточными сдачами — вы видите прогресс каждую неделю.</p>
+      </div>
+      <div class="card rv d1">
+        <span class="utp-icon">🤖</span>
+        <h3 class="utp-title">Умно</h3>
+        <p class="utp-txt">AI-агенты и автоматизация в любой проект. Ваш сайт или приложение может работать и продавать самостоятельно.</p>
+      </div>
+      <div class="card rv d2">
+        <span class="utp-icon">🛡</span>
+        <h3 class="utp-title">Надёжно</h3>
+        <p class="utp-txt">Поэтапная оплата. Правки до утверждения без ограничений. Поддержка 30 дней после запуска включена в стоимость.</p>
+      </div>
+    </div>
+    <div class="techs">
+      <span class="tech">React</span><span class="tech">Node.js</span><span class="tech">Python</span>
+      <span class="tech">OpenAI</span><span class="tech">Telegram API</span><span class="tech">PostgreSQL</span>
+      <span class="tech">Netlify</span><span class="tech">Docker</span>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO (dark) -->
+<section class="sec pf-bg" id="portfolio">
+  <div class="c">
+    <div class="sec-head rv">
+      <div class="sec-label" style="background:var(--grad2)">/ 02 — портфолио</div>
+      <h2 class="sec-title" style="color:var(--txd)">Проекты, которые<br>приносят <span class="hl-d">результат</span></h2>
+      <p class="sec-sub" style="color:var(--txd2)">Нажмите на проект, чтобы узнать подробности</p>
+    </div>
+    <div class="pf-filters rv">
+      <button class="fil act" data-f="all">Все</button>
+      <button class="fil" data-f="site">Сайты</button>
+      <button class="fil" data-f="app">Приложения</button>
+      <button class="fil" data-f="ai">AI-агенты</button>
+      <button class="fil" data-f="landing">Лендинги</button>
+    </div>
+    <div class="pf-g" id="pfg">
+      <div class="pc feat rv" data-t="site">
+        <div class="pp"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div class="p-tag"><span class="tag t-site">Сайт</span></div>
+        <div class="pov">
+          <h3 class="p-title">Корпоративный сайт под ключ</h3>
+          <p class="p-meta">Строительная компания · Полный редизайн</p>
+          <p class="p-res">✓ +65% заявок за первый месяц</p>
+        </div>
+      </div>
+      <div class="pc rv d1" data-t="ai">
+        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
+        <div class="p-tag"><span class="tag t-ai">AI-агент</span></div>
+        <div class="pov">
+          <h3 class="p-title">AI-консультант для интернет-магазина</h3>
+          <p class="p-meta">E-commerce · Автоматизация</p>
+          <p class="p-res">✓ 90% запросов без менеджера</p>
+        </div>
+      </div>
+      <div class="pc rv d2" data-t="landing">
+        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="p-tag"><span class="tag t-land">Лендинг</span></div>
+        <div class="pov">
+          <h3 class="p-title">Продающий лендинг для курса</h3>
+          <p class="p-meta">EdTech · Конверсия</p>
+          <p class="p-res">✓ Конверсия 8.3% (рынок: 2–3%)</p>
+        </div>
+      </div>
+      <div class="pc wide rv" data-t="app">
+        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+        <div class="p-tag"><span class="tag t-app">Приложение</span></div>
+        <div class="pov">
+          <h3 class="p-title">Веб-приложение для управления записями</h3>
+          <p class="p-meta">Медицинский центр · SaaS MVP</p>
+          <p class="p-res">✓ 200+ пользователей в первый месяц</p>
+        </div>
+      </div>
+      <div class="pc wide rv d1" data-t="site">
+        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="p-tag"><span class="tag t-site">Сайт</span></div>
+        <div class="pov">
+          <h3 class="p-title">Сайт-визитка с формой бронирования</h3>
+          <p class="p-meta">Фотограф · Личный бренд</p>
+          <p class="p-res">✓ Запуск за 5 дней от брифа</p>
+        </div>
+      </div>
+    </div>
+    <div class="pf-cta rv">
+      <p>Есть похожая задача?</p>
+      <a href="#contact" class="btn btn-p">→ Обсудить проект бесплатно</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="c">
+    <div class="sec-head rv">
+      <div class="sec-label">/ 03 — услуги и цены</div>
+      <h2 class="sec-title">Что я делаю<br>и сколько <span class="hl">это стоит</span></h2>
+    </div>
+    <div class="srv-g">
+      <div class="sc rv">
+        <div class="sc-icon">🌐</div>
+        <h3 class="sc-title">Сайты</h3>
+        <p class="sc-desc">Визитки, лендинги, корпоративные сайты. Быстрая загрузка, мобильная версия, SEO.</p>
+        <div><div class="sc-price">от 15 000 ₽</div><div class="sc-term">от 3 дней</div></div>
+        <a href="#contact" class="btn btn-s btn-sm">Узнать подробнее</a>
+      </div>
+      <div class="sc rv d1">
+        <div class="sc-icon">📱</div>
+        <h3 class="sc-title">Приложения</h3>
+        <p class="sc-desc">Веб-приложения, MVP, SaaS, личные кабинеты. Всё что выходит за рамки сайта-визитки.</p>
+        <div><div class="sc-price">от 50 000 ₽</div><div class="sc-term">от 4 недель</div></div>
+        <a href="#contact" class="btn btn-s btn-sm">Узнать подробнее</a>
+      </div>
+      <div class="sc rv d2">
+        <div class="sc-icon">🤖</div>
+        <h3 class="sc-title">AI-агенты</h3>
+        <p class="sc-desc">Чат-боты, автоматизация процессов, AI-интеграции в сайт или мессенджер.</p>
+        <div><div class="sc-price">от 20 000 ₽</div><div class="sc-term">от 1 недели</div></div>
+        <a href="#contact" class="btn btn-s btn-sm">Узнать подробнее</a>
+      </div>
+      <div class="sc feat-s rv d3">
+        <div class="sc-icon">⭐</div>
+        <h3 class="sc-title">Пакет «Система»</h3>
+        <p class="sc-desc">Сайт + AI-агент + поддержка под ключ. Лучший выбор для бизнеса, который хочет расти автоматически.</p>
+        <div><div class="sc-price">от 72 000 ₽</div><div class="sc-term">Вместо 105 000 ₽</div></div>
+        <a href="#contact" class="btn btn-p btn-sm">★ Хочу пакет</a>
+      </div>
+    </div>
+    <div class="vs rv">
+      <h3 class="vs-title">Что входит в пакет «Цифровая система»</h3>
+      <ul class="vs-list">
+        <li class="vs-item"><span>✓ Продающий лендинг</span><span>отдельно: 45 000 ₽</span></li>
+        <li class="vs-item"><span>✓ AI-консультант 24/7</span><span>отдельно: 30 000 ₽</span></li>
+        <li class="vs-item"><span>✓ Подключение к мессенджеру</span><span>отдельно: 15 000 ₽</span></li>
+        <li class="vs-item"><span>✓ Поддержка 30 дней</span><span>отдельно: 15 000 ₽</span></li>
+      </ul>
+      <div class="vs-total">
+        <span>Цена пакета:</span>
+        <div><span class="vs-old">105 000 ₽</span> <span class="vs-new"> 72 000 ₽</span></div>
+      </div>
+      <div class="vs-cta"><a href="#contact" class="btn btn-p">→ Хочу пакет «Система»</a></div>
+    </div>
+    <div class="guar">
+      <div class="guar-i"><span>🔒</span><span>Оплата поэтапно — только за принятый этап</span></div>
+      <div class="guar-i"><span>✏️</span><span>Правки до утверждения — без ограничений</span></div>
+      <div class="guar-i"><span>📁</span><span>Исходники и доступы — ваши с первого дня</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="sec" id="process" style="background:var(--bg3)">
+  <div class="c">
+    <div class="sec-head rv" style="text-align:center">
+      <div class="sec-label" style="justify-content:center">/ 04 — процесс</div>
+      <h2 class="sec-title">Как проходит <span class="hl">работа</span></h2>
+      <p class="sec-sub" style="margin:.75rem auto 0">Вам нужно около 30 минут в неделю — остальное беру на себя</p>
+    </div>
+    <div class="proc-g">
+      <div class="ps rv"><div class="ps-num">1</div><div><h4 class="ps-title">Бесплатная консультация</h4><p class="ps-desc">Обсуждаем задачу, предлагаю 2–3 решения</p><span class="ps-time">30–60 мин</span></div></div>
+      <div class="ps rv d1"><div class="ps-num">2</div><div><h4 class="ps-title">Бриф и концепция</h4><p class="ps-desc">Согласовываем ТЗ, сроки, стоимость</p><span class="ps-time">1–3 дня</span></div></div>
+      <div class="ps rv d2"><div class="ps-num">3</div><div><h4 class="ps-title">Разработка</h4><p class="ps-desc">Поэтапно, с промежуточными сдачами</p><span class="ps-time">По договору</span></div></div>
+      <div class="ps rv d3"><div class="ps-num">4</div><div><h4 class="ps-title">Запуск</h4><p class="ps-desc">Тестирование, правки, передача доступов</p><span class="ps-time">1–3 дня</span></div></div>
+      <div class="ps rv d4"><div class="ps-num">5</div><div><h4 class="ps-title">Поддержка</h4><p class="ps-desc">Правки, консультации после запуска</p><span class="ps-time">30 дней включено</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec rv-bg" id="reviews">
+  <div class="c">
+    <div class="sec-head rv" style="text-align:center">
+      <div class="sec-label" style="justify-content:center">/ 05 — отзывы</div>
+      <h2 class="sec-title">Что говорят <span class="hl">клиенты</span></h2>
+    </div>
+    <div class="rv-wrap rv">
+      <div class="rv-track" id="rvt">
+        <div class="rv-card"><div class="rv-inner">
+          <div class="rv-stars">★★★★★</div>
+          <p class="rv-text">«Светлана сделала сайт для моего фитнес-клуба за 7 дней. Сначала не верил, что так быстро возможно — но результат превзошёл все ожидания. Заявки пошли уже в первую неделю после запуска.»</p>
+          <div class="rv-auth"><div class="rv-photo">АК</div><div><div class="rv-name">Александр К.</div><div class="rv-role">Владелец фитнес-клуба «Форма»</div></div></div>
+        </div></div>
+        <div class="rv-card"><div class="rv-inner">
+          <div class="rv-stars">★★★★★</div>
+          <p class="rv-text">«Заказывала AI-агента для обработки входящих сообщений. Теперь бот отвечает на 90% стандартных вопросов сам, а я занимаюсь только сложными случаями. Времени стало вдвое больше.»</p>
+          <div class="rv-auth"><div class="rv-photo">МС</div><div><div class="rv-name">Марина С.</div><div class="rv-role">Онлайн-магазин косметики</div></div></div>
+        </div></div>
+        <div class="rv-card"><div class="rv-inner">
+          <div class="rv-stars">★★★★★</div>
+          <p class="rv-text">«Работаем со Светланой уже второй проект подряд. Оба раза: чёткие сроки, поэтапная оплата и никаких сюрпризов. Рекомендую всем, кто ценит предсказуемость.»</p>
+          <div class="rv-auth"><div class="rv-photo">ДЛ</div><div><div class="rv-name">Дмитрий Л.</div><div class="rv-role">Руководитель онлайн-школы</div></div></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="rv-ctrl">
+      <button class="rv-btn" id="rvPrev">←</button>
+      <div class="rv-dots"><div class="rv-dot on" data-i="0"></div><div class="rv-dot" data-i="1"></div><div class="rv-dot" data-i="2"></div></div>
+      <button class="rv-btn" id="rvNext">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="c">
+    <div class="ab-in">
+      <div class="ab-wrap rv">
+        <div class="ab-frame">
+          <div class="ab-ph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Ваше фото</span>
+          </div>
+        </div>
+      </div>
+      <div class="rv d1">
+        <div class="sec-label">/ 06 — обо мне</div>
+        <h2 class="ab-h2">Привет, я <span class="hl">Светлана</span> 👋</h2>
+        <p class="ab-p">Веб-разработчик. Создаю сайты, приложения и AI-агентов — всё, что нужно бизнесу в интернете.</p>
+        <p class="ab-p">За 3+ года сделала 50+ проектов для малого бизнеса, стартапов и частных специалистов. Работаю честно: поэтапная оплата, фиксированные сроки в договоре, исходники ваши с первого дня.</p>
+        <p class="ab-p">Отвечаю в течение 2 часов с 9:00 до 20:00 МСК. Первая консультация — бесплатно.</p>
+        <div class="ab-soc">
+          <a href="https://t.me/your_username" class="soc-btn" target="_blank" rel="noopener">✈ Telegram</a>
+          <a href="https://github.com/your_username" class="soc-btn" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://instagram.com/your_username" class="soc-btn" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec faq-bg" id="faq">
+  <div class="c">
+    <div class="sec-head rv" style="text-align:center">
+      <div class="sec-label" style="justify-content:center">/ 07 — вопросы</div>
+      <h2 class="sec-title">Часто задаваемые <span class="hl">вопросы</span></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item rv"><button class="faq-q">Сколько стоит проект? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Стоимость зависит от типа и сложности. Сайт-визитка — от 15 000 ₽, лендинг — от 30 000 ₽, AI-агент — от 20 000 ₽. Точную цену назову после бесплатной консультации — это займёт 30 минут.</div></div></div>
+      <div class="faq-item rv d1"><button class="faq-q">Сколько времени займёт разработка? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Сайт-визитка — 3–7 дней. Лендинг — 1–2 недели. Сложный проект (приложение или AI-система) — от 4 до 6 недель. Сроки фиксируем в договоре и я их соблюдаю.</div></div></div>
+      <div class="faq-item rv d2"><button class="faq-q">Что если мне не понравится результат? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Работаю поэтапно: вы видите и принимаете каждый этап до следующего. Правки до момента утверждения — без ограничений и без доплат.</div></div></div>
+      <div class="faq-item rv"><button class="faq-q">Смогу ли я сам обновлять сайт? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Да. После передачи проекта провожу инструктаж и оставляю инструкцию. Большинство клиентов обновляют тексты и фото самостоятельно.</div></div></div>
+      <div class="faq-item rv d1"><button class="faq-q">Нужен ли мне свой хостинг и домен? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Если есть — используем ваш. Если нет — помогу выбрать и подключить, это включено в стоимость. Вы остаётесь полным владельцем сайта.</div></div></div>
+      <div class="faq-item rv d2"><button class="faq-q">Как происходит оплата? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Поэтапно: часть при старте, остальное при сдаче каждого этапа. Предоплату полностью не прошу — это ваши деньги до тех пор, пока вы не получили и не приняли работу.</div></div></div>
+      <div class="faq-item rv"><button class="faq-q">Вы работаете по договору? <span class="faq-ic">+</span></button><div class="faq-ans"><div class="faq-ans-in">Да, всегда. Договор фиксирует объём работ, сроки, стоимость и условия. Это защищает и вас, и меня.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact" style="background:var(--bg3)">
+  <div class="c">
+    <div class="ct-in">
+      <div class="rv">
+        <div class="sec-label">/ 08 — контакт</div>
+        <h2 class="ct-title">Давайте обсудим<br><span class="hl">вашу задачу</span></h2>
+        <p class="ct-sub">Расскажите о проекте — отвечу в течение 2 часов и предложу варианты решения.</p>
+        <div class="ct-chs">
+          <a href="https://t.me/your_username" class="ch" target="_blank" rel="noopener">
+            <span class="ch-icon">✈</span>
+            <div><div style="font-weight:600">Telegram</div><div style="font-size:.8rem;color:var(--tx2)">@your_username</div></div>
+          </a>
+          <a href="https://wa.me/your_number" class="ch" target="_blank" rel="noopener">
+            <span class="ch-icon">📱</span>
+            <div><div style="font-weight:600">WhatsApp</div><div style="font-size:.8rem;color:var(--tx2)">+__ ваш номер</div></div>
+          </a>
+          <a href="mailto:hello@your-domain.ru" class="ch">
+            <span class="ch-icon">✉</span>
+            <div><div style="font-weight:600">Email</div><div style="font-size:.8rem;color:var(--tx2)">hello@your-domain.ru</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="rv d1">
+        <div class="form-box">
+          <form id="cform" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="contact">
+            <p style="display:none"><input name="bot-field"></p>
+            <div class="fg">
+              <label class="flbl" for="nm">Ваше имя *</label>
+              <input class="fi" type="text" id="nm" name="name" placeholder="Как вас зовут?" required>
+            </div>
+            <div class="fg">
+              <label class="flbl" for="ci">Telegram или телефон *</label>
+              <input class="fi" type="text" id="ci" name="contact_info" placeholder="@username или +код-страны-номер" required>
+            </div>
+            <div class="fg">
+              <label class="flbl" for="msg">Опишите задачу</label>
+              <textarea class="fta" id="msg" name="message" placeholder="Что нужно сделать? (1–2 предложения)"></textarea>
+            </div>
+            <div class="fck-w">
+              <input class="fck" type="checkbox" id="consent" name="consent" required>
+              <label class="fck-lbl" for="consent">Я согласен(а) на обработку персональных данных в соответствии с <a href="/privacy.html">политикой конфиденциальности</a></label>
+            </div>
+            <button type="submit" class="btn btn-p f-sub">→ Отправить заявку</button>
+          </form>
+          <div class="f-ok" id="fok">
+            <div class="f-ok-ic">✨</div>
+            <h3 class="f-ok-t">Заявка получена!</h3>
+            <p class="f-ok-s">Напишу вам в течение 2 часов.</p>
+          </div>
+          <p class="f-guar">🔒 Данные защищены · Без спама · Первая консультация бесплатно</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="c">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="ft-logo"><span class="ft-logo-mark"></span> Svetlana Dev</div>
+        <p class="ft-tag">Строю цифровые системы, которые работают вместо вас. Сайты, приложения, AI-агенты.</p>
+        <div class="ft-soc">
+          <a href="https://t.me/your_username" class="ft-si" target="_blank" rel="noopener" aria-label="Telegram">✈</a>
+          <a href="https://wa.me/your_number" class="ft-si" target="_blank" rel="noopener" aria-label="WhatsApp">📱</a>
+          <a href="https://instagram.com/your_username" class="ft-si" target="_blank" rel="noopener" aria-label="Instagram">◎</a>
+          <a href="https://github.com/your_username" class="ft-si" target="_blank" rel="noopener" aria-label="GitHub">⌥</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="ft-col-t">Услуги</h4>
+        <ul class="ft-lks">
+          <li><a href="#services">Сайты</a></li>
+          <li><a href="#services">Приложения</a></li>
+          <li><a href="#services">AI-агенты</a></li>
+          <li><a href="#services">Пакет «Система»</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="ft-col-t">Контакты</h4>
+        <ul class="ft-lks">
+          <li><a href="https://t.me/your_username" target="_blank" rel="noopener">@your_username</a></li>
+          <li><a href="tel:+your_number">+ваш номер</a></li>
+          <li><a href="mailto:hello@your-domain.ru">hello@your-domain.ru</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="ft-col-t">Документы</h4>
+        <ul class="ft-lks">
+          <li><a href="/privacy.html">Политика конф.</a></li>
+          <li><a href="/terms.html">Польз. соглашение</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <div class="ft-leg">
+        <div>Самозанятый специалист · Николаева Светлана</div>
+        <div>ИНН: [заполнить] · ОГРНИП: [заполнить после регистрации ИП]</div>
+        <div class="ft-leg-lks">
+          <a href="/privacy.html">Политика конфиденциальности</a>
+          <a href="/terms.html">Пользовательское соглашение</a>
+        </div>
+      </div>
+      <div class="ft-copy">© 2026 Светлана Николаева.<br>Все права защищены.</div>
+    </div>
+  </div>
+</footer>
+
+<button class="st" id="st" aria-label="Наверх">↑</button>
+
+<script>
+const nav=document.getElementById('nav'),mob=document.getElementById('mob');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',scrollY>20);
+  document.getElementById('st').classList.toggle('on',scrollY>400);
+},{passive:true});
+document.getElementById('burger').addEventListener('click',()=>mob.classList.toggle('open'));
+mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mob.classList.remove('open')));
+document.getElementById('st').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// Kinetic hero title
+(function(){
+  const el=document.getElementById('h1');
+  const words=el.textContent.trim().split(' ');
+  el.innerHTML=words.map((w,i)=>`<span class="w" style="animation-delay:${i*.08}s">${w}</span>`).join(' ');
+  requestAnimationFrame(()=>{
+    el.querySelectorAll('.w').forEach(w=>w.classList.add('on'));
+    setTimeout(()=>['hsub','hacts','htr'].forEach(id=>document.getElementById(id).classList.add('on')),200);
+  });
+})();
+
+// Scroll reveal
+const ro=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);}
+}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+// Counters
+function runCounter(el){
+  const to=+el.dataset.to,sfx=el.dataset.sfx||'',t0=performance.now(),dur=1500;
+  (function tick(now){
+    const p=Math.min((now-t0)/dur,1),v=Math.round((1-Math.pow(1-p,3))*to);
+    el.textContent=v+sfx;if(p<1)requestAnimationFrame(tick);
+  })(t0);
+}
+const co=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.querySelectorAll('[data-to]').forEach(runCounter);co.unobserve(e.target);}
+}),{threshold:.4});
+co.observe(document.getElementById('nums'));
+
+// Portfolio filters
+document.querySelectorAll('.fil').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fil').forEach(b=>b.classList.remove('act'));
+    btn.classList.add('act');
+    const f=btn.dataset.f;
+    document.querySelectorAll('.pc').forEach(c=>{c.style.display=(f==='all'||c.dataset.t===f)?'':'none';});
+  });
+});
+
+// Reviews slider
+let cur=0;
+const rvt=document.getElementById('rvt'),dots=document.querySelectorAll('.rv-dot'),total=dots.length;
+function goTo(i){cur=(i+total)%total;rvt.style.transform=`translateX(-${cur*100}%)`;dots.forEach((d,j)=>d.classList.toggle('on',j===cur));}
+document.getElementById('rvPrev').addEventListener('click',()=>goTo(cur-1));
+document.getElementById('rvNext').addEventListener('click',()=>goTo(cur+1));
+dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
+let tx=0;
+rvt.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+rvt.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)goTo(cur+(d>0?1:-1));});
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.faq-item'),was=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(x=>x.classList.remove('open'));
+    if(!was)item.classList.add('open');
+  });
+});
+
+// Form
+document.getElementById('cform').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const fd=new FormData(e.target);
+  try{await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd).toString()});}catch(_){}
+  e.target.style.display='none';document.getElementById('fok').style.display='block';
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+scrollY-68,behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>
