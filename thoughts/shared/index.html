@@ -9,6 +9,7 @@
   <meta property="og:description" content="Сайты, приложения и AI-агенты. От идеи до запуска за 2–6 недель.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237C3AED'/%3E%3Cstop offset='100%25' stop-color='%230EA5E9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='21' font-style='italic' fill='white' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -57,8 +58,8 @@
 
     /* ── RESET ────────────────────────────────────── */
     *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
-    html { scroll-behavior:smooth }
-    body { background:var(--bg); color:var(--tx); font-family:var(--fb); font-size:1rem; line-height:1.65; overflow-x:hidden }
+    html { scroll-behavior:smooth; overflow-x:clip; max-width:100vw }
+    body { background:var(--bg); color:var(--tx); font-family:var(--fb); font-size:1rem; line-height:1.65; overflow-x:clip; max-width:100vw; width:100% }
     h1,h2,h3,h4 { font-family:var(--fh); line-height:1.15; font-weight:400; font-style:italic }
     a { color:inherit; text-decoration:none }
     img { max-width:100%; display:block }
@@ -175,7 +176,7 @@
 
     /* Hero visual */
     .hero-vis { display:flex; justify-content:center; align-items:center }
-    .h-frame { position:relative; width:300px; height:380px }
+    .h-frame { position:relative; width:320px; height:420px }
     /* aurora glow behind frame */
     .h-frame::before {
       content:''; position:absolute; inset:-32px; border-radius:50%;
@@ -185,12 +186,10 @@
     @keyframes photo-glow { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
     .h-ph {
       position:relative; z-index:1; width:100%; height:100%;
-      background:var(--bg2); border-radius:var(--r-xl);
-      border:1px solid rgba(124,58,237,.15); box-shadow:0 8px 32px rgba(124,58,237,.12);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:1rem; color:var(--tx3); font-size:.875rem;
+      border-radius:var(--r-xl); overflow:hidden;
+      border:1px solid rgba(124,58,237,.15); box-shadow:0 8px 40px rgba(124,58,237,.18);
     }
-    .h-ph svg { width:60px; height:60px; opacity:.25 }
+    .h-ph img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block }
     .fc {
       position:absolute; background:rgba(255,255,255,.88); border:1px solid var(--bdr);
       border-radius:var(--r-lg); padding:.6rem 1rem; backdrop-filter:blur(16px);
@@ -245,6 +244,23 @@
     .p-res { font-size:.8rem; color:#3DFFA8; font-weight:600 }
     .pf-cta { text-align:center; margin-top:3rem }
     .pf-cta p { color:var(--txd2); margin-bottom:1rem }
+
+    /* ── PROMO STRIP ─────────────────────────────── */
+    .promo-strip {
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+      background:linear-gradient(135deg,rgba(124,58,237,.06) 0%,rgba(14,165,233,.06) 100%);
+      border:1.5px solid rgba(124,58,237,.2); border-radius:var(--r-xl);
+      padding:1.125rem 1.75rem; margin-bottom:2.5rem;
+    }
+    .promo-left { display:flex; align-items:center; gap:.875rem }
+    .promo-badge {
+      font-size:.6875rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+      background:var(--grad); color:#fff; border-radius:var(--r-full); padding:4px 11px;
+      white-space:nowrap;
+    }
+    .promo-text { font-size:.9375rem; font-weight:600; color:var(--tx) }
+    .promo-text span { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .promo-note { font-size:.8rem; color:var(--tx2) }
 
     /* ── SERVICES ─────────────────────────────────── */
     .srv-g { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin-bottom:3rem }
@@ -318,6 +334,20 @@
     .ab-soc { display:flex; gap:.75rem; margin-top:1.5rem }
     .soc-btn { display:flex; align-items:center; gap:.5rem; padding:9px 16px; border-radius:var(--r-full); border:1.5px solid var(--bdr2); color:var(--tx2); font-size:.875rem; transition:all .2s }
     .soc-btn:hover { border-color:var(--a1); color:var(--a1); background:rgba(124,58,237,.05) }
+    .btn-contact-big { display:inline-flex; align-items:center; justify-content:center; padding:16px 48px; border-radius:var(--r-full); background:var(--grad); color:#fff; font-size:1.125rem; font-weight:600; letter-spacing:.02em; box-shadow:0 4px 24px rgba(124,58,237,.3); transition:all .25s }
+    .btn-contact-big:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(124,58,237,.45) }
+
+    /* ── ADVANTAGES ──────────────────────────────── */
+    .adv-g { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem }
+    .adv-card { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r-xl); padding:2rem; display:flex; flex-direction:column; gap:1rem; box-shadow:0 4px 20px rgba(15,23,41,.05); transition:transform .3s,box-shadow .3s }
+    .adv-card:hover { transform:translateY(-5px); box-shadow:0 12px 40px rgba(15,23,41,.1) }
+    .adv-icon { font-size:2.25rem }
+    .adv-title { font-size:1.125rem; line-height:1.3 }
+    .adv-txt { color:var(--tx2); line-height:1.8; font-size:.9375rem; flex-grow:1 }
+    .adv-foot { display:flex; align-items:center; gap:.5rem; margin-top:.5rem; padding-top:1rem; border-top:1px solid var(--bdr) }
+    .adv-foot-dot { width:8px; height:8px; border-radius:50%; background:var(--grad); flex-shrink:0 }
+    .adv-foot-lbl { font-size:.75rem; font-weight:600; color:var(--a1) }
+    @media(max-width:768px){ .adv-g { grid-template-columns:1fr } }
 
     /* ── FAQ ──────────────────────────────────────── */
     .faq-bg { background:var(--bg2) }
@@ -388,12 +418,20 @@
 
     /* ── RESPONSIVE ───────────────────────────────── */
     @media(max-width:768px){
+      section, header, footer, .nums { overflow-x:hidden }
+      .hero-cnt { width:100%; max-width:100%; overflow:hidden }
+      .hero-h1 { overflow-wrap:break-word; word-break:break-word }
+      .hero-sub { overflow-wrap:break-word }
+      .promo-strip { flex-direction:column; align-items:flex-start; gap:.75rem }
+      .promo-note { font-size:.8rem }
+      .guar { flex-direction:column; align-items:flex-start; gap:1rem }
+      .guar-i { font-size:.875rem }
       :root{--sec-py:64px}
       .nav-links,.nav-acts .btn:not(.burger-cta){display:none}
       .burger{display:flex}
       .hero-in{grid-template-columns:1fr;text-align:center;padding:3.5rem 0}
       .hero-vis{order:-1}
-      .h-frame{width:220px;height:280px}
+      .h-frame{width:240px;height:315px}
       .fc1{right:-8px}.fc2{left:-8px}
       .hero-acts,.hero-trust{justify-content:center}
       .nums-g{grid-template-columns:repeat(2,1fr)}
@@ -408,6 +446,7 @@
       .proc-g::before{display:none}
       .ps{display:flex;align-items:flex-start;gap:1rem;text-align:left;padding-top:0}
       .ps-num{margin:0;flex-shrink:0}
+      .ps > div { min-width:0; overflow:hidden }
       .ab-in{grid-template-columns:1fr}
       .ab-wrap{max-width:260px;margin:0 auto}
       .ct-in{grid-template-columns:1fr}
@@ -415,6 +454,9 @@
       .ft-brand{grid-column:span 2}
       .ft-bot{flex-direction:column;text-align:center}
       .ft-copy,.ft-leg-lks{text-align:center;justify-content:center}
+      .ft-leg-lks{flex-wrap:wrap;gap:.5rem}
+      .promo-left{flex-wrap:wrap;gap:.5rem}
+      .promo-text{font-size:.875rem}
     }
     @media(max-width:640px){
       .srv-g{grid-template-columns:1fr}
@@ -470,15 +512,14 @@
         <div class="hero-trust" id="htr">
           <span class="trust-i">Фиксированная цена</span>
           <span class="trust-i">Поэтапная оплата</span>
-          <span class="trust-i">AI-интеграция</span>
+          <span class="trust-i">Без посредников</span>
           <span class="trust-i">Поддержка после</span>
         </div>
       </div>
       <div class="hero-vis">
         <div class="h-frame">
           <div class="h-ph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Ваше фото</span>
+            <img src="img/hero-ai.jpg" alt="Светлана Качанович — разработчик AI-систем" loading="eager">
           </div>
           <div class="fc fc1"><span class="fc-dot fc-dot-g"></span> Проект запущен 🚀</div>
           <div class="fc fc2"><span class="fc-dot fc-dot-b"></span> AI-агент готов</div>
@@ -519,9 +560,9 @@
         <p class="utp-txt">AI-агенты и автоматизация в любой проект. Ваш сайт или приложение может работать и продавать самостоятельно.</p>
       </div>
       <div class="card rv d2">
-        <span class="utp-icon">🛡</span>
-        <h3 class="utp-title">Надёжно</h3>
-        <p class="utp-txt">Поэтапная оплата. Правки до утверждения без ограничений. Поддержка 30 дней после запуска включена в стоимость.</p>
+        <span class="utp-icon">🤝</span>
+        <h3 class="utp-title">Напрямую</h3>
+        <p class="utp-txt">Работаю лично — без менеджеров и посредников. Вы всегда общаетесь с человеком, который делает ваш проект. Поэтапная оплата, правки без ограничений, 30 дней поддержки включены.</p>
       </div>
     </div>
     <div class="techs">
@@ -538,7 +579,7 @@
     <div class="sec-head rv">
       <div class="sec-label" style="background:var(--grad2)">/ 02 — портфолио</div>
       <h2 class="sec-title" style="color:var(--txd)">Проекты, которые<br>приносят <span class="hl-d">результат</span></h2>
-      <p class="sec-sub" style="color:var(--txd2)">Нажмите на проект, чтобы узнать подробности</p>
+      <p class="sec-sub" style="color:var(--txd2)">Каждый проект сделан лично — от дизайна до запуска</p>
     </div>
     <div class="pf-filters rv">
       <button class="fil act" data-f="all">Все</button>
@@ -549,40 +590,42 @@
     </div>
     <div class="pf-g" id="pfg">
       <div class="pc feat rv" data-t="site">
-        <div class="pp"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="pp" style="background-image:url('img/vizitka-preview.jpg');background-size:auto 165%;background-position:center 18%"></div>
         <div class="p-tag"><span class="tag t-site">Сайт</span></div>
-        <div style="position:absolute;bottom:1rem;left:1rem;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:9999px;padding:4px 12px;font-size:.7rem;color:#F59E0B;font-weight:600;z-index:3">⏳ В разработке</div>
         <div class="pov">
           <h3 class="p-title">Личная визитка разработчика</h3>
           <p class="p-meta">Персональный бренд · Тёмная тема с золотыми акцентами</p>
+          <p class="p-res">✓ Одностраничный сайт · HTML/CSS/JS</p>
         </div>
       </div>
-      <div class="pc rv d1" data-t="landing">
-        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M7 13s.5 3 5 3 5-3 5-3"/><path d="M9 9h.01M15 9h.01"/></svg></div>
+      <div class="pc wide rv d1" data-t="landing">
+        <div class="pp" style="background-image:url('img/landing-preview.jpg');background-size:auto 165%;background-position:center 18%"></div>
         <div class="p-tag"><span class="tag t-land">Лендинг</span></div>
-        <div style="position:absolute;bottom:1rem;left:1rem;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:9999px;padding:4px 12px;font-size:.7rem;color:#F59E0B;font-weight:600;z-index:3">⏳ В разработке</div>
         <div class="pov">
           <h3 class="p-title">Цветочная лавка</h3>
-          <p class="p-meta">Ритейл · Продающий лендинг</p>
-          <p class="p-res">✓ Каталог, доставка 60 мин, программа лояльности</p>
+          <p class="p-meta">Ритейл · Авторская флористика</p>
+          <p class="p-res">✓ Продающий лендинг · HTML/CSS/JS</p>
         </div>
       </div>
-      <div class="pc rv d2" data-t="app">
-        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <div class="p-tag"><span class="tag t-app">Приложение</span></div>
+      <div class="pc wide rv d2" data-t="landing">
+        <div class="pp" style="background-image:url('img/kviz-preview.jpg');background-size:auto 165%;background-position:center 18%"></div>
+        <div class="p-tag"><span class="tag t-land">Лендинг</span></div>
         <div class="pov">
           <h3 class="p-title">Квиз-лендинг для риелтора</h3>
           <p class="p-meta">Недвижимость · Лидогенерация · Беларусь</p>
-          <p class="p-res" style="color:#F59E0B">⏳ В разработке</p>
+          <p class="p-res">✓ Квиз + форма захвата · HTML/CSS/JS</p>
         </div>
       </div>
       <a class="pc wide rv" data-t="ai" href="https://t.me/SmartClerk_bot" target="_blank" rel="noopener" style="display:block">
-        <div class="pp"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="pp" style="padding:0;overflow:hidden;position:relative">
+          <img src="img/smartclerk-preview.jpg" alt="SmartClerk бот" style="width:100%;height:100%;object-fit:cover;object-position:68% center;opacity:.82;display:block">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,24,41,.55) 0%,rgba(12,24,41,.1) 100%)"></div>
+        </div>
         <div class="p-tag"><span class="tag t-ai">AI-агент</span></div>
-        <div class="pov">
+        <div class="pov" style="opacity:1">
           <h3 class="p-title">SmartClerk — бот записи клиентов</h3>
           <p class="p-meta">Telegram · Автоматизация · Сфера услуг</p>
-          <p class="p-res">✓ Открыть в Telegram → @SmartClerk_bot</p>
+          <p class="p-res">✓ Попробовать → @SmartClerk_bot</p>
         </div>
       </a>
       <div class="pc rv d1" data-t="app">
@@ -614,6 +657,13 @@
     <div class="sec-head rv">
       <div class="sec-label">/ 03 — услуги и цены</div>
       <h2 class="sec-title">Что я делаю<br>и сколько <span class="hl">это стоит</span></h2>
+    </div>
+    <div class="promo-strip rv">
+      <div class="promo-left">
+        <span class="promo-badge">Старт</span>
+        <span class="promo-text">Первым клиентам — скидка <span>до 30%</span></span>
+      </div>
+      <span class="promo-note">Берусь за первые проекты по специальной цене, чтобы наработать кейсы — вы получаете результат дешевле рынка.</span>
     </div>
     <div class="srv-g">
       <div class="sc rv">
@@ -692,9 +742,8 @@
     <div class="ab-in">
       <div class="ab-wrap rv">
         <div class="ab-frame">
-          <div class="ab-ph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Ваше фото</span>
+          <div class="ab-ph" style="background:none;border:none;box-shadow:none;padding:0;min-height:unset">
+            <img src="img/about-photo.jpg" alt="Светлана Качанович — веб-разработчик" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:var(--r-xl);box-shadow:0 8px 32px rgba(124,58,237,.15)">
           </div>
         </div>
       </div>
@@ -705,10 +754,39 @@
         <p class="ab-p">Разрабатываю с использованием современного стека и инструментов на основе AI. Работаю честно: поэтапная оплата, фиксированные сроки в договоре, исходники ваши с первого дня.</p>
         <p class="ab-p">Отвечаю в течение 2 часов с 9:00 до 21:00 МСК. Первая консультация — бесплатно.</p>
         <div class="ab-soc">
-          <a href="https://t.me/Vet1ana" class="soc-btn" target="_blank" rel="noopener">✈ Telegram</a>
-          <a href="https://github.com/lana1010sveta-dotcom" class="soc-btn" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://instagram.com/mmmmmmmsvetlana" class="soc-btn" target="_blank" rel="noopener">Instagram</a>
+          <a href="#contact" class="btn-contact-big">Контакты</a>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="sec rv-bg" id="advantages">
+  <div class="c">
+    <div class="sec-head rv" style="text-align:center">
+      <div class="sec-label" style="justify-content:center">/ вместо отзывов — факты</div>
+      <h2 class="sec-title">Что отличает <span class="hl">мою работу</span></h2>
+      <p class="sec-sub" style="margin:.75rem auto 0">Пока отзывы только накапливаются — вот что могу сказать о себе честно</p>
+    </div>
+    <div class="adv-g">
+      <div class="adv-card rv">
+        <span class="adv-icon">💻</span>
+        <h3 class="adv-title">Этот сайт — пример моей работы</h3>
+        <p class="adv-txt">То, что вы сейчас видите, создано мной: дизайн, код, мобильная версия, форма заявки. Без конструкторов и готовых шаблонов — только ручная разработка под задачу.</p>
+        <div class="adv-foot"><span class="adv-foot-dot"></span><span class="adv-foot-lbl">Живой пример прямо здесь</span></div>
+      </div>
+      <div class="adv-card rv d1">
+        <span class="adv-icon">👤</span>
+        <h3 class="adv-title">Работаю только я — без посредников</h3>
+        <p class="adv-txt">Не передаю задачи другим и не пропадаю после предоплаты. Вы всегда общаетесь с тем, кто делает ваш проект, и знаете на каком этапе всё находится.</p>
+        <div class="adv-foot"><span class="adv-foot-dot"></span><span class="adv-foot-lbl">Прямой контакт с разработчиком</span></div>
+      </div>
+      <div class="adv-card rv d2">
+        <span class="adv-icon">🔒</span>
+        <h3 class="adv-title">Платите за принятый результат</h3>
+        <p class="adv-txt">Поэтапная оплата: вы видите и принимаете каждый этап до следующего. Правки до утверждения — без доплат. 100% предоплату не прошу никогда.</p>
+        <div class="adv-foot"><span class="adv-foot-dot"></span><span class="adv-foot-lbl">Ваши деньги защищены</span></div>
       </div>
     </div>
   </div>
@@ -758,9 +836,8 @@
       </div>
       <div class="rv d1">
         <div class="form-box">
-          <form id="cform" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-            <input type="hidden" name="form-name" value="contact">
-            <p style="display:none"><input name="bot-field"></p>
+          <form id="cform" name="contact" method="POST">
+
             <div class="fg">
               <label class="flbl" for="nm">Ваше имя *</label>
               <input class="fi" type="text" id="nm" name="name" placeholder="Как вас зовут?" required>
@@ -909,7 +986,7 @@ document.querySelectorAll('.faq-q').forEach(btn=>{
 document.getElementById('cform').addEventListener('submit',async e=>{
   e.preventDefault();
   const fd=new FormData(e.target);
-  try{await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd).toString()});}catch(_){}
+  try{await fetch('https://formspree.io/f/mojblqov',{method:'POST',headers:{'Accept':'application/json'},body:fd});}catch(_){}
   e.target.style.display='none';document.getElementById('fok').style.display='block';
 });
 
