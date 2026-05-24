@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Запрещаем зум — мобильное приложение, не сайт -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Южена</title>
+
+  <!-- Telegram Mini App SDK — обязательно первым -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Контейнер экранов — сюда рендерится текущий экран -->
+  <div id="screen-container"></div>
+
+  <!-- Нижняя навигация -->
+  <nav id="bottom-nav">
+    <button class="nav-item active" data-tab="home">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span class="nav-label">Главная</span>
+    </button>
+    <button class="nav-item" data-tab="services">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+      <span class="nav-label">Услуги</span>
+    </button>
+    <button class="nav-item" data-tab="gallery">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      <span class="nav-label">Работы</span>
+    </button>
+    <button class="nav-item" data-tab="my-bookings">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+      <span class="nav-label">Записи</span>
+    </button>
+  </nav>
+
+  <!-- Лайтбокс для галереи -->
+  <div id="lightbox" class="overlay hidden">
+    <div class="overlay-backdrop" id="lightbox-close"></div>
+    <div id="lightbox-content">
+      <button class="lightbox-close-btn" id="lightbox-x">✕</button>
+      <div id="lightbox-img"></div>
+      <div id="lightbox-footer">
+        <div id="lightbox-title"></div>
+        <button class="btn btn-primary" id="lightbox-book">Записаться на такую же</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Нижний лист (bottom sheet) для подтверждения отмены -->
+  <div id="bottom-sheet" class="overlay hidden">
+    <div class="overlay-backdrop" id="bs-close"></div>
+    <div id="bs-panel">
+      <div id="bs-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast уведомление -->
+  <div id="toast" class="hidden"></div>
+
+</div><!-- #app -->
+
+<!-- Данные: услуги, галерея, конфиг салона -->
+<script src="data.js"></script>
+<!-- Главный файл: роутер, рендер экранов, события -->
+<script src="app.js"></script>
+
+</body>
+</html>
