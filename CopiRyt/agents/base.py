@@ -17,11 +17,13 @@ class Agent:
     model: str
     temperature: float
     system_prompt: str
+    max_tokens: int = 2000  # достаточно для постов 150-400 слов
 
     async def run(self, message: str) -> str:
         response = await _client.chat.completions.create(
             model=self.model,
             temperature=self.temperature,
+            max_tokens=self.max_tokens,
             messages=[
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user",   "content": message},
