@@ -8,6 +8,7 @@ OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
 TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
 FAL_API_KEY: str = os.getenv("FAL_API_KEY", "")
 APIFY_TOKEN: str = os.getenv("APIFY_TOKEN", "")
+ALLOWED_USER_ID: int = int(os.getenv("ALLOWED_USER_ID", "5166343410"))
 
 BASE_DIR = Path(__file__).parent
 

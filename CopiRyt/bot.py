@@ -225,6 +225,13 @@ async def _write_post_flow(
 #  Команды                                                             #
 # ------------------------------------------------------------------ #
 
+async def deny_access(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if update.callback_query:
+        await update.callback_query.answer("⛔ Нет доступа", show_alert=True)
+    elif update.message:
+        await update.message.reply_text("⛔ Бот работает в приватном режиме.\nДоступ разрешён только владельцу.")
+
+
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
         "Привет! Я CopiRyt — пишу посты в стиле Светланы.\n\n"
@@ -707,9 +714,15 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 def create_app() -> Application:
     app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", cmd_start))
-    app.add_handler(CommandHandler("help",  cmd_help))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.add_handler(CallbackQueryHandler(handle_callback))
+    owner = filters.User(user_id=config.ALLOWED_USER_ID)
+
+    app.add_handler(CommandHandler("start", cmd_start, filters=owner))
+    app.add_handler(CommandHandler("help",  cmd_help,  filters=owner))
+    app.add_handler(MessageHandler(owner & filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(CallbackQueryHandler(handle_callback, block=False),   group=0)
+
+    # Все остальные — отказ
+    app.add_handler(MessageHandler(~owner, deny_access), group=1)
+    app.add_handler(CallbackQueryHandler(deny_access),   group=1)
 
     return app
