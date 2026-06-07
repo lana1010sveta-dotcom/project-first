@@ -16,6 +16,11 @@ import config
 import storage
 from agents.dispatcher import Dispatcher
 from agents.orchestrator import Orchestrator
+from agents.image_generator import generate_post_image
+from agents.trend_scout import TrendScout
+from agents.apify_trend_scout import find_social_trends
+
+_trend_scout = TrendScout()
 
 logger = logging.getLogger(__name__)
 
@@ -64,13 +69,14 @@ def _save_example_post(text: str) -> None:
 MAIN_KB = ReplyKeyboardMarkup(
     [
         [KeyboardButton("✍️ Написать пост"), KeyboardButton("🎨 Мой стиль")],
-        [KeyboardButton("📅 Контент-план"),  KeyboardButton("⚙️ Настройки")],
+        [KeyboardButton("📅 Контент-план"),  KeyboardButton("🔥 Тренды")],
+        [KeyboardButton("⚙️ Настройки")],
     ],
     resize_keyboard=True,
     is_persistent=True,
 )
 
-MAIN_BUTTONS = {"✍️ Написать пост", "🎨 Мой стиль", "📅 Контент-план", "⚙️ Настройки"}
+MAIN_BUTTONS = {"✍️ Написать пост", "🎨 Мой стиль", "📅 Контент-план", "🔥 Тренды", "⚙️ Настройки"}
 
 
 def _write_post_keyboard() -> InlineKeyboardMarkup:
@@ -84,6 +90,22 @@ def _write_post_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton("💫 Личная история",    callback_data="wp:story"),
         ],
     ])
+
+
+def _trends_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🏢 По нише",              callback_data="trend:niche")],
+        [InlineKeyboardButton("🎯 По конкретной теме",   callback_data="trend:topic")],
+        [InlineKeyboardButton("🌐 Тренды из соцсетей",   callback_data="trend:social")],
+    ])
+
+
+def _trend_results_keyboard(topics: list[dict]) -> InlineKeyboardMarkup:
+    rows = []
+    for i, t in enumerate(topics[:3]):
+        label = t["topic"][:50]
+        rows.append([InlineKeyboardButton(f"✍️ Написать пост {i+1}", callback_data=f"trend_write:{i}")])
+    return InlineKeyboardMarkup(rows)
 
 
 def _style_keyboard(has_post: bool) -> InlineKeyboardMarkup:
@@ -124,6 +146,7 @@ def _plan_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton("👀 Показать план",    callback_data="plan:show"),
             InlineKeyboardButton("➡️ Следующая тема",   callback_data="plan:next"),
         ],
+        [InlineKeyboardButton("📚 Мои посты",           callback_data="plan:my_posts")],
     ])
 
 
@@ -150,6 +173,8 @@ def _edit_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton("🔚 Переделать финал",    callback_data="edit:финал"),
         ],
         [InlineKeyboardButton("🔬 Разобрать стиль",       callback_data="analyze")],
+        [InlineKeyboardButton("🖼 Создать картинку",       callback_data="gen_image")],
+        [InlineKeyboardButton("💾 Сохранить пост",         callback_data="save_post")],
     ])
 
 
@@ -270,6 +295,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if text == "📅 Контент-план":
         await _handle_plan_menu(update, context)
         return
+    if text == "🔥 Тренды":
+        await update.message.reply_text("Что ищем?", reply_markup=_trends_keyboard())
+        return
     if text == "⚙️ Настройки":
         await _handle_settings_menu(update, context)
         return
@@ -313,6 +341,53 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             "Агенты будут учитывать его при написании новых постов. "
             "Можешь прислать ещё один или нажать «✍️ Написать пост»."
         )
+        return
+
+    if awaiting in ("trend_niche", "trend_topic"):
+        label = "нише" if awaiting == "trend_niche" else "теме"
+        status = await update.message.reply_text(f"🔍 Ищу тренды по {label}: {text}…")
+        try:
+            query = f"ниша: {text}" if awaiting == "trend_niche" else f"тема: {text}"
+            trends = await _trend_scout.find_trends(query)
+            if not trends:
+                await status.edit_text("Не нашёл трендов. Попробуй другой запрос.")
+                return
+            context.user_data["trend_topics"] = trends
+            lines = [f"🔥 Трендовые темы по «{text}»:\n"]
+            for i, t in enumerate(trends, 1):
+                why = f"\n   _{t['why']}_" if t.get("why") else ""
+                lines.append(f"{i}. {t['topic']}{why}")
+            await status.edit_text("\n".join(lines))
+            await update.message.reply_text(
+                "Выбери тему — напишу пост:",
+                reply_markup=_trend_results_keyboard(trends),
+            )
+        except Exception as e:
+            logger.exception("Ошибка TrendScout")
+            await status.edit_text(f"Ошибка поиска: {e}")
+        return
+
+    if awaiting == "trend_social":
+        status = await update.message.reply_text(f"🌐 Ищу в Google Trends: {text}…\n\nЭто займёт ~30–60 сек.")
+        try:
+            trends = await find_social_trends(text)
+            if not trends:
+                await status.edit_text("Не нашёл данных. Попробуй другой запрос.")
+                return
+            context.user_data["trend_topics"] = trends
+            lines = [f"🌐 Google Trends по «{text}»:\n"]
+            for i, t in enumerate(trends, 1):
+                source = f" [{t.get('source', '')}]" if t.get("source") else ""
+                why = f"\n   _{t['why']}_" if t.get("why") else ""
+                lines.append(f"{i}. {t['topic']}{source}{why}")
+            await status.edit_text("\n".join(lines))
+            await update.message.reply_text(
+                "Выбери тему — напишу пост:",
+                reply_markup=_trend_results_keyboard(trends),
+            )
+        except Exception as e:
+            logger.exception("Ошибка Apify TrendScout")
+            await status.edit_text(f"Ошибка поиска: {e}")
         return
 
     # Свободный ввод — классифицируем через dispatcher
@@ -383,6 +458,37 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await query.edit_message_text("Напиши тему или имя клиента — напишу личную историю.")
         return
 
+    # --- Тренды ---
+    if data == "trend:niche":
+        context.user_data["awaiting"] = "trend_niche"
+        await query.edit_message_text("Напиши свою нишу — например: «салон красоты», «психолог», «онлайн-школа»")
+        return
+
+    if data == "trend:topic":
+        context.user_data["awaiting"] = "trend_topic"
+        await query.edit_message_text("Напиши тему — например: «боты для записи», «автоматизация Instagram»")
+        return
+
+    if data == "trend:social":
+        context.user_data["awaiting"] = "trend_social"
+        await query.edit_message_text(
+            "🌐 Поиск через Google Trends\n\n"
+            "Напиши нишу или тему — например: «вайбкодинг», «салон красоты», «онлайн-школа»"
+        )
+        return
+
+    if data.startswith("trend_write:"):
+        idx = int(data.split(":")[1])
+        trends = context.user_data.get("trend_topics", [])
+        if idx >= len(trends):
+            await query.answer("Тема не найдена.", show_alert=True)
+            return
+        topic = trends[idx]["topic"]
+        await query.edit_message_text(f"✍️ Пишу пост по теме:\n«{topic}»\n\nЗапускаю агентов…")
+        status_msg = await query.message.reply_text("Запускаю команду агентов (~30–60 сек).")
+        await _write_post_flow(topic, "educational", "", status_msg, query.message, context)
+        return
+
     # --- Стиль ---
     if data == "style:request_text":
         context.user_data["awaiting"] = "text_for_analysis"
@@ -447,6 +553,22 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await query.edit_message_text(header, reply_markup=_adjust_style_keyboard())
         return
 
+    # --- Сохранить пост ---
+    if data == "save_post":
+        post = context.user_data.get("pending_post", "")
+        if not post:
+            await query.answer("Нет поста для сохранения.", show_alert=True)
+            return
+        topic = post.split("\n")[0][:80].strip()
+        storage.save_post(topic, post)
+        # Отвечаем отдельным сообщением — кнопки остаются
+        await query.answer("💾 Сохранено!", show_alert=False)
+        await query.message.reply_text(
+            f"💾 Пост сохранён: {topic}\n\n"
+            "📅 Контент-план → 📚 Мои посты — чтобы посмотреть все."
+        )
+        return
+
     # --- Контент-план ---
     if data == "plan:show":
         status = await query.edit_message_text("Смотрю план…")
@@ -458,6 +580,22 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         status = await query.edit_message_text("Ищу следующую тему…")
         topic = await _orchestrator.get_next_topic()
         await _edit_or_reply(status, f"Следующая тема:\n\n{topic}")
+        return
+
+    if data == "plan:my_posts":
+        posts = storage.get_published_posts()
+        if not posts:
+            await query.edit_message_text(
+                "Сохранённых постов пока нет.\n\n"
+                "После генерации нажми «💾 Сохранить пост»."
+            )
+            return
+        lines = [f"📚 Сохранённые посты ({len(posts)}):\n"]
+        for i, p in enumerate(reversed(posts[-20:]), 1):
+            date = p.get("date", "")[:10]
+            topic = p.get("topic", "")[:60]
+            lines.append(f"{i}. {date} — {topic}")
+        await _edit_or_reply(query.message, "\n".join(lines))
         return
 
     # --- Настройки ---
@@ -481,6 +619,27 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             "⚙️ Настройки — модели, помощь\n\n"
             "Или просто напиши «Напиши пост про X» — бот поймёт."
         )
+        return
+
+    # --- Генерация картинки ---
+    if data == "gen_image":
+        post = context.user_data.get("pending_post", "")
+        if not post:
+            await query.answer("Нет поста для иллюстрации.", show_alert=True)
+            return
+        # Статус — отдельным сообщением, кнопки остаются
+        await query.answer("🎨 Генерирую…", show_alert=False)
+        status = await query.message.reply_text("🎨 Генерирую картинку 16:9…")
+        try:
+            image_bytes = await generate_post_image(post)
+            await query.message.reply_photo(
+                photo=image_bytes,
+                caption="Картинка к посту — 16:9",
+            )
+            await status.edit_text("✅ Картинка готова!")
+        except Exception as e:
+            logger.exception("Ошибка генерации картинки")
+            await status.edit_text(f"Ошибка генерации: {e}")
         return
 
     # --- Анализ стиля ---

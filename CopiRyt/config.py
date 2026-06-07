@@ -6,6 +6,8 @@ load_dotenv()
 
 OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
 TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+FAL_API_KEY: str = os.getenv("FAL_API_KEY", "")
+APIFY_TOKEN: str = os.getenv("APIFY_TOKEN", "")
 
 BASE_DIR = Path(__file__).parent
 
@@ -14,6 +16,7 @@ MODELS = {
     "sonnet":     os.getenv("MODEL_SONNET",     "anthropic/claude-sonnet-4-5"),
     "haiku":      os.getenv("MODEL_HAIKU",      "anthropic/claude-haiku-4-5"),
     "researcher": os.getenv("MODEL_RESEARCHER", "perplexity/sonar"),
+    "image":      os.getenv("MODEL_IMAGE",      "openai/gpt-5-image-mini"),
 }
 
 
