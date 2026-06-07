@@ -97,6 +97,16 @@ def _trends_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("🏢 По нише",              callback_data="trend:niche")],
         [InlineKeyboardButton("🎯 По конкретной теме",   callback_data="trend:topic")],
         [InlineKeyboardButton("🌐 Тренды из соцсетей",   callback_data="trend:social")],
+        [InlineKeyboardButton("📱 LinkedIn / Twitter",   callback_data="trend:social_post")],
+    ])
+
+
+def _social_platform_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("💼 LinkedIn",  callback_data="trend:ln"),
+            InlineKeyboardButton("🐦 Twitter/X", callback_data="trend:tw"),
+        ],
     ])
 
 
@@ -374,6 +384,28 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             await status.edit_text(f"Ошибка поиска: {e}")
         return
 
+    if awaiting == "trend_social_post":
+        platform = context.user_data.pop("social_platform", "linkedin")
+        platform_label = "LinkedIn" if platform == "linkedin" else "Twitter/X"
+        status = await update.message.reply_text(
+            f"📱 Исследую тему и пишу {platform_label}-пост: «{text[:60]}»…\n\n"
+            "Шаг 1: ресёрч → шаг 2: пост (~30–60 сек)."
+        )
+        try:
+            post, critique = await _orchestrator.write_social_post(
+                topic=text,
+                platform=platform,
+                on_progress=lambda t: status.edit_text(t),
+            )
+            await _edit_or_reply(status, post)
+            await update.message.reply_text(critique)
+            context.user_data["pending_post"] = post
+            await update.message.reply_text("Хочешь что-то поменять?", reply_markup=_edit_keyboard())
+        except Exception as e:
+            logger.exception("Ошибка write_social_post")
+            await _edit_or_reply(status, f"Ошибка: {e}")
+        return
+
     if awaiting == "trend_social":
         status = await update.message.reply_text(f"🌐 Ищу в Google Trends: {text}…\n\nЭто займёт ~30–60 сек.")
         try:
@@ -481,6 +513,26 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await query.edit_message_text(
             "🌐 Поиск через Google Trends\n\n"
             "Напиши нишу или тему — например: «вайбкодинг», «салон красоты», «онлайн-школа»"
+        )
+        return
+
+    if data == "trend:social_post":
+        await query.edit_message_text(
+            "📱 Пост для LinkedIn / Twitter\n\n"
+            "Выбери платформу:",
+            reply_markup=_social_platform_keyboard(),
+        )
+        return
+
+    if data in ("trend:ln", "trend:tw"):
+        platform = "linkedin" if data == "trend:ln" else "twitter"
+        context.user_data["social_platform"] = platform
+        context.user_data["awaiting"] = "trend_social_post"
+        label = "LinkedIn" if platform == "linkedin" else "Twitter/X"
+        await query.edit_message_text(
+            f"💼 {label}-пост\n\n"
+            "Напиши тему — я сначала проведу ресёрч, потом напишу пост "
+            f"в правильном формате {label}."
         )
         return
 

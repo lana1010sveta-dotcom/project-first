@@ -143,3 +143,69 @@ class Orchestrator:
 
     async def decompose(self, task: str) -> str:
         return await self.decomposer.run(task)
+
+    # ------------------------------------------------------------------ #
+    #  Пайплайн: пост для LinkedIn / Twitter (social-media skill)          #
+    # ------------------------------------------------------------------ #
+    async def write_social_post(
+        self,
+        topic: str,
+        platform: str = "linkedin",
+        on_progress: ProgressCb = None,
+    ) -> tuple[str, str]:
+        """
+        Research-first пайплайн по методологии social-media скилла.
+        platform: 'linkedin' | 'twitter'
+        Возвращает (текст поста, разбор критика).
+        """
+        await self._notify(on_progress, "🔍 Ресёрчер собирает данные по теме…")
+        research = await self.researcher.run(
+            f"Тема: {topic}\nПлатформа: {platform}\n"
+            "Найди: актуальные данные, примеры, цифры, тренды. "
+            "Ответ — структурированные факты и инсайты, 200–400 слов."
+        )
+
+        await self._notify(on_progress, f"✍️ Копирайтер пишет пост для {platform.upper()}…")
+
+        if platform == "twitter":
+            format_instructions = (
+                "Формат: Twitter/X тред.\n"
+                "Структура:\n"
+                "1/🧵 [Хук — одна мощная фраза, останавливает скролл]\n"
+                "2/ [Ключевой инсайт или проблема]\n"
+                "3/ [Доказательство, цифра, пример]\n"
+                "4/ [Практический вывод]\n"
+                "5/ [CTA — вопрос или призыв]\n"
+                "Каждый твит — строго до 280 символов. Не более 2 хэштегов на весь тред."
+            )
+        else:
+            format_instructions = (
+                "Формат: LinkedIn пост.\n"
+                "Структура:\n"
+                "— Первая строка: хук — одна фраза, которая остановит скролл\n"
+                "— Пустая строка\n"
+                "— Контекст: почему это важно (1–2 абзаца)\n"
+                "— Главный инсайт: 2–3 коротких абзаца или пункта\n"
+                "— Пустая строка\n"
+                "— Призыв к действию или вопрос аудитории\n"
+                "— 3–5 хэштегов в конце\n"
+                "Весь пост — до 1300 символов."
+            )
+
+        tweaks = storage.get_style_tweaks()
+        tweak_block = (
+            "\n\nАКТИВНЫЕ ПРАВКИ СТИЛЯ:\n" + "\n".join(f"• {t}" for t in tweaks)
+            if tweaks else ""
+        )
+
+        post = await self.copywriter.run(
+            f"Тема: {topic}\n\n"
+            f"{format_instructions}\n\n"
+            f"Данные ресёрчера:\n{research}"
+            f"{tweak_block}"
+        )
+
+        await self._notify(on_progress, "🎯 Критик оценивает…")
+        critique = await self.critic.run(post)
+
+        return post, critique
