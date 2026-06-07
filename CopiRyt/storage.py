@@ -9,7 +9,7 @@ _FILE = Path(__file__).parent / "storage.json"
 def _load() -> dict:
     if _FILE.exists():
         return json.loads(_FILE.read_text(encoding="utf-8"))
-    return {"published_posts": [], "content_plan": []}
+    return {"published_posts": [], "content_plan": [], "style_tweaks": []}
 
 
 def _save(data: dict) -> None:
@@ -50,4 +50,31 @@ def mark_post_done(index: int) -> None:
     plan = data["content_plan"]
     if 0 <= index < len(plan):
         plan[index]["status"] = "published"
+    _save(data)
+
+
+# --- Правки стиля ---
+
+def get_style_tweaks() -> list[str]:
+    return _load().get("style_tweaks", [])
+
+
+def toggle_style_tweak(tweak_id: str) -> bool:
+    """Включает или выключает правку. Возвращает True если правка добавлена."""
+    data = _load()
+    tweaks = data.get("style_tweaks", [])
+    if tweak_id in tweaks:
+        tweaks.remove(tweak_id)
+        data["style_tweaks"] = tweaks
+        _save(data)
+        return False
+    tweaks.append(tweak_id)
+    data["style_tweaks"] = tweaks
+    _save(data)
+    return True
+
+
+def clear_style_tweaks() -> None:
+    data = _load()
+    data["style_tweaks"] = []
     _save(data)

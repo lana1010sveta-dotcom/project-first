@@ -13,6 +13,7 @@ from telegram.ext import (
 )
 
 import config
+import storage
 from agents.dispatcher import Dispatcher
 from agents.orchestrator import Orchestrator
 
@@ -22,6 +23,32 @@ _dispatcher   = Dispatcher()
 _orchestrator = Orchestrator()
 
 _POSTS_FILE = Path(__file__).parent / "posts-draft.md"
+
+# Доступные правки стиля: id → (кнопка, инструкция для копирайтера)
+STYLE_TWEAKS_MAP: dict[str, tuple[str, str]] = {
+    "humor":      ("😄 Юмор",          "Добавляй лёгкий юмор и самоиронию"),
+    "no_emotion": ("😐 Без эмоций",    "Пиши спокойно, без восклицаний и восторгов"),
+    "shorter":    ("✂️ Короче",        "Максимально сокращай, убирай воду"),
+    "sharper":    ("⚡ Хлёстче",       "Острее и прямее, без мягкости и оговорок"),
+    "vivid":      ("💬 Живее",         "Больше разговорного языка и живых деталей"),
+    "concrete":   ("🎯 Конкретика",    "Только имена, цифры, ситуации — никаких абстракций"),
+    "calm":       ("🧘 Спокойнее",     "Меньше призывов, больше наблюдений"),
+    "no_hashtags":("🚫 Без хэштегов",  "Никаких хэштегов в тексте"),
+}
+
+
+def _adjust_style_keyboard() -> InlineKeyboardMarkup:
+    active = storage.get_style_tweaks()
+    rows = []
+    items = list(STYLE_TWEAKS_MAP.items())
+    for i in range(0, len(items), 2):
+        row = []
+        for tweak_id, (label, _) in items[i:i+2]:
+            prefix = "✅ " if tweak_id in active else ""
+            row.append(InlineKeyboardButton(f"{prefix}{label}", callback_data=f"tweak:{tweak_id}"))
+        rows.append(row)
+    rows.append([InlineKeyboardButton("🗑 Сбросить все правки", callback_data="tweak:reset_all")])
+    return InlineKeyboardMarkup(rows)
 
 
 def _save_example_post(text: str) -> None:
@@ -78,8 +105,10 @@ def _style_keyboard(has_post: bool) -> InlineKeyboardMarkup:
                 InlineKeyboardButton("💰 Сделать продающим",    callback_data="edit:продающий"),
                 InlineKeyboardButton("🚫 Убрать хэштеги",       callback_data="edit:без хэштегов"),
             ],
+            [InlineKeyboardButton("🎛 Поправить стиль",          callback_data="style:adjust")],
         ])
     return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🎛 Поправить стиль",              callback_data="style:adjust")],
         [InlineKeyboardButton("🔬 Пришли текст — разберу стиль", callback_data="style:request_text")],
         [InlineKeyboardButton("📋 Мои правила письма",           callback_data="style:rules")],
         [
@@ -380,6 +409,42 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             "✅ Готово — активный пост и контекст очищены.\n\n"
             "Можешь начать заново: пришли новый текст или нажми «✍️ Написать пост»."
         )
+        return
+
+    if data == "style:adjust":
+        active = storage.get_style_tweaks()
+        active_names = [STYLE_TWEAKS_MAP[k][0] for k in active if k in STYLE_TWEAKS_MAP]
+        header = (
+            f"Активные правки: {', '.join(active_names)}\n\nНажми чтобы включить/выключить:"
+            if active_names else
+            "Правки стиля пока не выбраны.\n\nНажми чтобы включить:"
+        )
+        await query.edit_message_text(header, reply_markup=_adjust_style_keyboard())
+        return
+
+    if data.startswith("tweak:"):
+        tweak_id = data.split(":", 1)[1]
+        if tweak_id == "reset_all":
+            storage.clear_style_tweaks()
+            await query.edit_message_text(
+                "✅ Все правки стиля сброшены.\n\nТеперь бот пишет в базовом голосе.",
+                reply_markup=_adjust_style_keyboard(),
+            )
+            return
+        if tweak_id not in STYLE_TWEAKS_MAP:
+            return
+        label, instruction = STYLE_TWEAKS_MAP[tweak_id]
+        added = storage.toggle_style_tweak(tweak_id)
+        active = storage.get_style_tweaks()
+        active_names = [STYLE_TWEAKS_MAP[k][0] for k in active if k in STYLE_TWEAKS_MAP]
+        status_line = (
+            f"✅ Включено: {label}" if added else f"⭕ Выключено: {label}"
+        )
+        header = status_line + (
+            f"\n\nАктивные правки: {', '.join(active_names)}"
+            if active_names else "\n\nПравок нет — базовый голос."
+        )
+        await query.edit_message_text(header, reply_markup=_adjust_style_keyboard())
         return
 
     # --- Контент-план ---

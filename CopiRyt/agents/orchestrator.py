@@ -2,6 +2,7 @@
 from typing import Callable, Awaitable, Optional
 
 import config
+import storage
 from agents.researcher import Researcher
 from agents.architect import Architect
 from agents.copywriter import Copywriter
@@ -59,8 +60,14 @@ class Orchestrator:
         )
 
         await self._notify(on_progress, "✍️ Копирайтер пишет черновик…")
+        tweaks = storage.get_style_tweaks()
+        tweak_block = (
+            "\n\nАКТИВНЫЕ ПРАВКИ СТИЛЯ (применить обязательно):\n"
+            + "\n".join(f"• {t}" for t in tweaks)
+            if tweaks else ""
+        )
         post = await self.copywriter.run(
-            f"Каркас поста:\n{structure}\n\nДанные ресёрчера:\n{research}"
+            f"Каркас поста:\n{structure}\n\nДанные ресёрчера:\n{research}{tweak_block}"
         )
 
         await self._notify(on_progress, "⚡ Редактор заостряет текст…")
