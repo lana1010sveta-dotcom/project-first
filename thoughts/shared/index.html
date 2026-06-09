@@ -388,6 +388,28 @@
     .f-ok-s { color:var(--tx2) }
     .f-guar { text-align:center; margin-top:1rem; font-size:.75rem; color:var(--tx3) }
 
+    /* ── WIZARD FORM ─────────────────────────────── */
+    .wiz-hd { display:flex; align-items:center; gap:1rem; margin-bottom:1.75rem }
+    .wiz-lbl { font-size:.75rem; font-weight:600; color:var(--tx3); white-space:nowrap; letter-spacing:.04em }
+    .wiz-bar { flex:1; height:5px; background:var(--bg3); border-radius:3px; overflow:hidden }
+    .wiz-fill { height:100%; background:var(--grad); border-radius:3px; transition:width .4s cubic-bezier(.4,0,.2,1); width:0% }
+    .wiz-q { font-family:var(--fh); font-size:1.2rem; color:var(--tx); margin-bottom:.5rem; line-height:1.35 }
+    .wiz-hint { font-size:.8rem; color:var(--tx2); margin-bottom:1.25rem }
+    .wiz-chips { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-bottom:1.25rem }
+    .wiz-chip { padding:.75rem 1rem; border-radius:var(--r); border:1.5px solid var(--bdr2); background:var(--bg); color:var(--tx); font-family:var(--fb); font-size:.875rem; font-weight:500; cursor:pointer; transition:all .18s; text-align:left; line-height:1.4 }
+    .wiz-chip small { display:block; font-size:.72rem; color:var(--tx2); font-weight:400; margin-top:2px }
+    .wiz-chip:hover { border-color:rgba(124,58,237,.4); color:var(--a1) }
+    .wiz-chip.sel { border-color:var(--a1); background:rgba(124,58,237,.07); color:var(--a1); font-weight:600 }
+    .wiz-chip.sel small { color:var(--a4) }
+    .wiz-nav { display:flex; gap:.625rem; margin-top:1.25rem }
+    .wiz-nav > * { flex:1 }
+    .btn-ghost { background:transparent; border:1.5px solid var(--bdr2); color:var(--tx2); border-radius:var(--r-full); padding:.75rem 1.5rem; font-family:var(--fb); font-weight:600; font-size:.9375rem; cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center }
+    .btn-ghost:hover { border-color:var(--a1); color:var(--a1) }
+    .wiz-err { font-size:.8rem; color:#DC2626; margin-top:.35rem; display:none }
+    .wiz-err.show { display:block }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
+    .shake { animation:shake .32s ease }
+
     /* ── FOOTER ───────────────────────────────────── */
     .ft { background:var(--tx); padding:4rem 0 2rem; color:var(--txd) }
     .ft-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:2rem; margin-bottom:3rem }
@@ -832,26 +854,75 @@
       </div>
       <div class="rv d1">
         <div class="form-box">
-          <form id="cform" name="contact" method="POST">
+          <div id="wiz-wrap">
+            <div class="wiz-hd">
+              <span class="wiz-lbl">Шаг <span id="wiz-cur">1</span> из 4</span>
+              <div class="wiz-bar"><div class="wiz-fill" id="wiz-fill"></div></div>
+            </div>
 
-            <div class="fg">
-              <label class="flbl" for="nm">Ваше имя *</label>
-              <input class="fi" type="text" id="nm" name="name" placeholder="Как вас зовут?" required>
+            <!-- Шаг 1: Имя и Telegram -->
+            <div class="wiz-step" id="wiz-s1">
+              <p class="wiz-q">Как вас зовут?</p>
+              <div class="fg">
+                <label class="flbl" for="w-name">Имя *</label>
+                <input class="fi" type="text" id="w-name" placeholder="Ваше имя или псевдоним">
+                <div class="wiz-err" id="e-name">Пожалуйста, введите имя</div>
+              </div>
+              <div class="fg">
+                <label class="flbl" for="w-tg">Telegram *</label>
+                <input class="fi" type="text" id="w-tg" placeholder="@username">
+                <div class="wiz-err" id="e-tg">Укажите Telegram для связи</div>
+              </div>
+              <button class="btn btn-p" style="width:100%;justify-content:center" id="wiz-n1">Далее →</button>
             </div>
-            <div class="fg">
-              <label class="flbl" for="ci">Telegram или телефон *</label>
-              <input class="fi" type="text" id="ci" name="contact_info" placeholder="@username или +код-страны-номер" required>
+
+            <!-- Шаг 2: Бизнес -->
+            <div class="wiz-step" id="wiz-s2" style="display:none">
+              <p class="wiz-q">Чем занимаетесь?</p>
+              <div class="fg">
+                <label class="flbl" for="w-biz">Ваш бизнес или проект *</label>
+                <textarea class="fta" id="w-biz" placeholder="Например: небольшой магазин одежды, хочу автоматизировать приём заказов"></textarea>
+                <div class="wiz-err" id="e-biz">Расскажите немного о себе</div>
+              </div>
+              <div class="wiz-nav">
+                <button class="btn-ghost" id="wiz-b2">← Назад</button>
+                <button class="btn btn-p" id="wiz-n2">Далее →</button>
+              </div>
             </div>
-            <div class="fg">
-              <label class="flbl" for="msg">Опишите задачу</label>
-              <textarea class="fta" id="msg" name="message" placeholder="Что нужно сделать? (1–2 предложения)"></textarea>
+
+            <!-- Шаг 3: Опыт с ИИ -->
+            <div class="wiz-step" id="wiz-s3" style="display:none">
+              <p class="wiz-q">Ваш опыт с ИИ-инструментами?</p>
+              <p class="wiz-hint">Выберите вариант — перейдём дальше автоматически</p>
+              <div class="wiz-chips" id="chips-ai">
+                <button class="wiz-chip" data-val="Новичок">🌱 Новичок<small>Ещё не пробовал(а)</small></button>
+                <button class="wiz-chip" data-val="Базовый">⚡ Базовый<small>Пользуюсь ChatGPT и базовыми</small></button>
+                <button class="wiz-chip" data-val="Продвинутый">🚀 Продвинутый<small>Настраиваю инструменты</small></button>
+                <button class="wiz-chip" data-val="Эксперт">🏆 Эксперт<small>Строю AI-системы сам</small></button>
+              </div>
+              <button class="btn-ghost" style="width:100%" id="wiz-b3">← Назад</button>
             </div>
-            <div class="fck-w">
-              <input class="fck" type="checkbox" id="consent" name="consent" required>
-              <label class="fck-lbl" for="consent">Я согласен(а) на обработку персональных данных в соответствии с <a href="/privacy.html">политикой конфиденциальности</a></label>
+
+            <!-- Шаг 4: Цель -->
+            <div class="wiz-step" id="wiz-s4" style="display:none">
+              <p class="wiz-q">Что хотите получить?</p>
+              <p class="wiz-hint">Можно выбрать несколько вариантов</p>
+              <div class="wiz-chips" id="chips-goals">
+                <button class="wiz-chip" data-val="Сайт или лендинг">🌐 Сайт / лендинг</button>
+                <button class="wiz-chip" data-val="Telegram-бот">🤖 Telegram-бот</button>
+                <button class="wiz-chip" data-val="AI-агент">✨ AI-агент</button>
+                <button class="wiz-chip" data-val="Автоматизация">⚙️ Автоматизация</button>
+                <button class="wiz-chip" data-val="Мобильное приложение">📱 Приложение</button>
+                <button class="wiz-chip" data-val="Консультация">💬 Консультация</button>
+              </div>
+              <div class="wiz-err" id="e-goals">Выберите хотя бы один вариант</div>
+              <div class="wiz-nav">
+                <button class="btn-ghost" id="wiz-b4">← Назад</button>
+                <button class="btn btn-p" id="wiz-submit">Отправить заявку →</button>
+              </div>
             </div>
-            <button type="submit" class="btn btn-p f-sub">→ Отправить заявку</button>
-          </form>
+          </div>
+
           <div class="f-ok" id="fok">
             <div class="f-ok-ic">✨</div>
             <h3 class="f-ok-t">Заявка получена!</h3>
@@ -976,17 +1047,73 @@ document.querySelectorAll('.faq-q').forEach(btn=>{
   });
 });
 
-// Form
-document.getElementById('cform').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const fd=new FormData(e.target);
-  const data={name:fd.get('name'),contact_info:fd.get('contact_info'),message:fd.get('message')};
-  await Promise.allSettled([
-    fetch('https://formspree.io/f/mojblqov',{method:'POST',headers:{'Accept':'application/json'},body:fd}),
-    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-  ]);
-  e.target.style.display='none';document.getElementById('fok').style.display='block';
-});
+// Wizard form
+(function(){
+  const d={name:'',tg:'',business:'',ai_level:'',goals:[]};
+  function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}
+  function goto(n){
+    document.querySelectorAll('.wiz-step').forEach(s=>s.style.display='none');
+    document.getElementById('wiz-s'+n).style.display='';
+    document.getElementById('wiz-cur').textContent=n;
+    document.getElementById('wiz-fill').style.width=((n-1)/4*100)+'%';
+  }
+  // Step 1 → 2
+  document.getElementById('wiz-n1').addEventListener('click',()=>{
+    const name=document.getElementById('w-name').value.trim();
+    const tg=document.getElementById('w-tg').value.trim();
+    let ok=true;
+    if(!name){document.getElementById('e-name').classList.add('show');shake(document.getElementById('w-name'));ok=false;}else document.getElementById('e-name').classList.remove('show');
+    if(!tg){document.getElementById('e-tg').classList.add('show');shake(document.getElementById('w-tg'));ok=false;}else document.getElementById('e-tg').classList.remove('show');
+    if(!ok)return;
+    d.name=name;d.tg=tg;goto(2);
+  });
+  // Step 2 → 3
+  document.getElementById('wiz-n2').addEventListener('click',()=>{
+    const biz=document.getElementById('w-biz').value.trim();
+    if(!biz){document.getElementById('e-biz').classList.add('show');shake(document.getElementById('w-biz'));return;}
+    document.getElementById('e-biz').classList.remove('show');
+    d.business=biz;goto(3);
+  });
+  // Step 3 chips → auto-advance
+  document.querySelectorAll('#chips-ai .wiz-chip').forEach(c=>{
+    c.addEventListener('click',()=>{
+      document.querySelectorAll('#chips-ai .wiz-chip').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel');d.ai_level=c.dataset.val;
+      setTimeout(()=>goto(4),280);
+    });
+  });
+  // Step 4 multi-select
+  document.querySelectorAll('#chips-goals .wiz-chip').forEach(c=>{
+    c.addEventListener('click',()=>{
+      c.classList.toggle('sel');
+      d.goals=Array.from(document.querySelectorAll('#chips-goals .wiz-chip.sel')).map(x=>x.dataset.val);
+      if(d.goals.length)document.getElementById('e-goals').classList.remove('show');
+    });
+  });
+  // Back buttons
+  document.getElementById('wiz-b2').addEventListener('click',()=>goto(1));
+  document.getElementById('wiz-b3').addEventListener('click',()=>goto(2));
+  document.getElementById('wiz-b4').addEventListener('click',()=>goto(3));
+  // Submit
+  document.getElementById('wiz-submit').addEventListener('click',async()=>{
+    d.goals=Array.from(document.querySelectorAll('#chips-goals .wiz-chip.sel')).map(x=>x.dataset.val);
+    if(!d.goals.length){document.getElementById('e-goals').classList.add('show');shake(document.getElementById('chips-goals'));return;}
+    const btn=document.getElementById('wiz-submit');
+    btn.disabled=true;btn.textContent='Отправляем...';
+    document.getElementById('wiz-fill').style.width='100%';
+    const payload={name:d.name,contact_info:d.tg,business:d.business,ai_level:d.ai_level,goals:d.goals.join(', ')};
+    const fd=new FormData();
+    fd.append('name',d.name);fd.append('contact_info',d.tg);
+    fd.append('message','Бизнес: '+d.business+' | ИИ: '+d.ai_level+' | Цели: '+d.goals.join(', '));
+    await Promise.allSettled([
+      fetch('https://formspree.io/f/mojblqov',{method:'POST',headers:{'Accept':'application/json'},body:fd}),
+      fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    ]);
+    document.getElementById('wiz-wrap').style.display='none';
+    document.getElementById('fok').style.display='block';
+  });
+  goto(1);
+})();
 
 // Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
