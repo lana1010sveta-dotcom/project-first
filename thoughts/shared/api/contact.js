@@ -5,41 +5,48 @@ module.exports = async function handler(req, res) {
 
   const { name, contact_info, business, ai_level, goals } = req.body || {};
 
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
-  if (!token || !chatId) {
-    console.error('TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set');
-    return res.status(200).json({ ok: true });
-  }
-
-  const lines = [
-    '🔔 <b>Новая заявка с сайта!</b>',
-    '',
-    `👤 <b>Имя:</b> ${escHtml(name)}`,
-    `📬 <b>Telegram:</b> ${escHtml(contact_info)}`,
-  ];
-  if (business) lines.push(`🏢 <b>Бизнес:</b> ${escHtml(business)}`);
-  if (ai_level) lines.push(`🤖 <b>Опыт с ИИ:</b> ${escHtml(ai_level)}`);
-  if (goals)    lines.push(`🎯 <b>Цели:</b> ${escHtml(goals)}`);
-
-  const text = lines.join('\n');
-
-  try {
-    const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
-    });
-    if (!resp.ok) console.error('Telegram API error:', await resp.json());
-  } catch (err) {
-    console.error('Failed to send Telegram message:', err);
-  }
+  await Promise.allSettled([
+    sendTelegram({ name, contact_info, business, ai_level, goals }),
+    sendToSheets({ name, contact_info, business, ai_level, goals }),
+  ]);
 
   return res.status(200).json({ ok: true });
 };
 
-function escHtml(str) {
+async function sendTelegram({ name, contact_info, business, ai_level, goals }) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  const lines = [
+    '🔔 <b>Новая заявка с сайта!</b>',
+    '',
+    `👤 <b>Имя:</b> ${esc(name)}`,
+    `📬 <b>Telegram:</b> ${esc(contact_info)}`,
+  ];
+  if (business) lines.push(`🏢 <b>Бизнес:</b> ${esc(business)}`);
+  if (ai_level) lines.push(`🤖 <b>Опыт с ИИ:</b> ${esc(ai_level)}`);
+  if (goals)    lines.push(`🎯 <b>Цели:</b> ${esc(goals)}`);
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: lines.join('\n'), parse_mode: 'HTML' }),
+  });
+}
+
+async function sendToSheets({ name, contact_info, business, ai_level, goals }) {
+  const url = process.env.GOOGLE_SHEET_URL;
+  if (!url) return;
+
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, contact_info, business, ai_level, goals }),
+  });
+}
+
+function esc(str) {
   if (!str) return '—';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
