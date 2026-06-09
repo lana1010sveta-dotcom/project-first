@@ -980,7 +980,11 @@ document.querySelectorAll('.faq-q').forEach(btn=>{
 document.getElementById('cform').addEventListener('submit',async e=>{
   e.preventDefault();
   const fd=new FormData(e.target);
-  try{await fetch('https://formspree.io/f/mojblqov',{method:'POST',headers:{'Accept':'application/json'},body:fd});}catch(_){}
+  const data={name:fd.get('name'),contact_info:fd.get('contact_info'),message:fd.get('message')};
+  await Promise.allSettled([
+    fetch('https://formspree.io/f/mojblqov',{method:'POST',headers:{'Accept':'application/json'},body:fd}),
+    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  ]);
   e.target.style.display='none';document.getElementById('fok').style.display='block';
 });
 
