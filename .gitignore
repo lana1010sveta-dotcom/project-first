@@ -1,3 +1,7 @@
 .netlify/
 node_modules/
 .env
+__pycache__/
+*.pyc
+pitch-parser/*.json
+!pitch-parser/package.json
