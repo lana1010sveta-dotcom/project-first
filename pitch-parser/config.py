@@ -11,5 +11,5 @@ GOOGLE_CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 SHEET_NAME = os.getenv("SHEET_NAME", "Питчи")
 
-PDF_DPI = 150
+PDF_DPI = 96
 MAX_PAGES = 40

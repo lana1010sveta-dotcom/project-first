@@ -44,7 +44,7 @@ def extract_pitch_data(images: list[str], file_name: str) -> PitchData:
     for b64 in images:
         content.append({
             "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{b64}"},
+            "image_url": {"url": f"data:image/jpeg;base64,{b64}"},
         })
 
     response = client.chat.completions.create(

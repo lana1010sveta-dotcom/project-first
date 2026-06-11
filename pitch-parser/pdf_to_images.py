@@ -16,7 +16,7 @@ def pdf_to_base64_images(pdf_path: str | Path) -> list[str]:
 
     for i in range(total_pages):
         pix = doc[i].get_pixmap(matrix=mat)
-        b64 = base64.b64encode(pix.tobytes("png")).decode("utf-8")
+        b64 = base64.b64encode(pix.tobytes("jpeg", jpg_quality=82)).decode("utf-8")
         images.append(b64)
 
     doc.close()
