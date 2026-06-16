@@ -916,6 +916,11 @@
                 <button class="wiz-chip" data-val="Консультация">💬 Консультация</button>
               </div>
               <div class="wiz-err" id="e-goals">Выберите хотя бы один вариант</div>
+              <div class="fck-w" style="margin-top:1.5rem">
+                <input class="fck" type="checkbox" id="w-consent">
+                <label class="fck-lbl" for="w-consent">Даю согласие на обработку моих персональных данных (имя и контакт) в соответствии с <a href="/privacy.html" target="_blank" rel="noopener">Политикой конфиденциальности</a></label>
+              </div>
+              <div class="wiz-err" id="e-consent" style="margin-top:-1rem;margin-bottom:.75rem">Нужно ваше согласие на обработку данных</div>
               <div class="wiz-nav">
                 <button class="btn-ghost" id="wiz-b4">← Назад</button>
                 <button class="btn btn-p" id="wiz-submit">Отправить заявку →</button>
@@ -1098,6 +1103,9 @@ document.querySelectorAll('.faq-q').forEach(btn=>{
   document.getElementById('wiz-submit').addEventListener('click',async()=>{
     d.goals=Array.from(document.querySelectorAll('#chips-goals .wiz-chip.sel')).map(x=>x.dataset.val);
     if(!d.goals.length){document.getElementById('e-goals').classList.add('show');shake(document.getElementById('chips-goals'));return;}
+    const consent=document.getElementById('w-consent');
+    if(!consent.checked){document.getElementById('e-consent').classList.add('show');shake(consent.closest('.fck-w'));return;}
+    document.getElementById('e-consent').classList.remove('show');
     const btn=document.getElementById('wiz-submit');
     btn.disabled=true;btn.textContent='Отправляем...';
     document.getElementById('wiz-fill').style.width='100%';
