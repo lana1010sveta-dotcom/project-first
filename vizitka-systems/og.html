@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --accent:#e01e90; --accent3:#b15bff; --gold:#e0b46a;
+  --surface:#1e1638; --text:#f5eeff; --text2:#c4b4dd; --text3:#9183b0;
+}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{
+  position:relative; font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse 60% 70% at 12% 20%, #241544 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 95% 90%, #2a0f33 0%, transparent 60%),
+    #160f2b;
+}
+/* Фото справа */
+.photo{ position:absolute; inset:0 0 0 46%; overflow:hidden; }
+.photo img{ width:100%; height:100%; object-fit:cover; object-position:center 32%; filter:saturate(1.15) contrast(1.04); }
+.photo::before{ content:''; position:absolute; inset:0;
+  background:linear-gradient(155deg, var(--accent), var(--accent3) 75%); mix-blend-mode:color; opacity:.6; }
+.photo::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, #160f2b 0%, rgba(22,15,43,.55) 22%, transparent 55%); }
+
+/* Малиновое свечение */
+.glow{ position:absolute; width:520px; height:520px; left:-120px; bottom:-160px; border-radius:50%;
+  background:radial-gradient(circle, rgba(224,30,144,.32), transparent 68%); }
+
+/* Текст слева */
+.wrap{ position:absolute; left:72px; top:0; bottom:0; width:620px;
+  display:flex; flex-direction:column; justify-content:center; gap:0; z-index:3; }
+.mono{ width:74px; height:74px; border-radius:21px; margin-bottom:30px;
+  background:linear-gradient(135deg, var(--accent), #7a0f55);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:34px; color:#fff;
+  box-shadow:0 14px 34px rgba(224,30,144,.45); }
+.name{ font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:72px; line-height:1.04; margin-bottom:14px; }
+.role{ font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:34px; color:var(--text2); margin-bottom:26px; }
+.role em{ color:var(--accent3); font-style:italic; }
+.tags{ font-size:20px; letter-spacing:.04em; color:var(--text3); margin-bottom:34px; }
+.url{ display:inline-flex; align-items:center; gap:12px; font-size:21px; font-weight:600; color:var(--text);
+  background:rgba(224,30,144,.14); border:1px solid rgba(224,30,144,.4);
+  padding:13px 22px; border-radius:100px; align-self:flex-start; }
+.url .dot{ width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent); }
+.line{ width:64px; height:3px; background:linear-gradient(90deg,var(--gold),transparent); border-radius:3px; margin-bottom:30px; }
+</style>
+</head>
+<body>
+  <div class="photo"><img src="hero.jpg" alt=""></div>
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="mono">S</div>
+    <div class="line"></div>
+    <div class="name">Светлана</div>
+    <div class="role">создаю <em>цифровые системы</em></div>
+    <div class="tags">сайты · лендинги · веб-приложения · квизы</div>
+    <div class="url"><span class="dot"></span>vizitka-systems.vercel.app</div>
+  </div>
+</body>
+</html>
