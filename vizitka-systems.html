@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Светлана — цифровые системы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+/* ─────────── ПАЛИТРА (роли, точные hex) — Midnight ─────────── */
+
+:root{
+  --bg1:#160f2b; --bg2:#100a22; --bg3:#241544;
+  --surface:#1e1638; --surface2:#281d49;
+  --line:#3a2a5e; --gold:#e0b46a;
+  --text:#f5eeff; --text2:#c4b4dd; --text3:#8273a6;
+  --accent:#e01e90; --accent2:#ffb04a; --accent3:#b15bff;
+  --on-accent:#ffffff; --shadow:224,30,144;
+}
+
+body{
+  min-height:100dvh;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 12%, var(--bg3) 0%, transparent 60%),
+    radial-gradient(ellipse 65% 55% at 90% 90%, var(--bg2) 0%, transparent 60%),
+    var(--bg1);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:24px 16px 32px;
+  transition:background .5s ease, color .5s ease;
+}
+
+/* ─────────── Карточка ─────────── */
+.card{
+  width:100%; max-width:400px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:40px 32px 32px;
+  text-align:center;
+  position:relative; overflow:hidden;
+  box-shadow:
+    0 1px 3px rgba(0,0,0,.05),
+    0 10px 30px rgba(var(--shadow),.10),
+    0 30px 60px rgba(var(--shadow),.07);
+  transition:background .5s ease, border-color .5s ease, box-shadow .5s ease;
+}
+.card::before{ /* мягкий ореол сверху от акцента */
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% -10%, rgba(var(--shadow),.10), transparent 55%);
+  pointer-events:none;
+}
+
+/* ─────────── Фото-шапка ─────────── */
+.hero{
+  position:relative;
+  margin:-40px -32px 0;
+  height:182px; overflow:hidden;
+}
+.hero img{
+  width:100%; height:100%; object-fit:cover; object-position:center 36%;
+  display:block; filter:saturate(1.15) contrast(1.04);
+}
+.hero::before{ /* малиново-ультрафиолетовая тонировка фото (свет сохраняется) */
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(155deg, var(--accent) 0%, var(--accent3) 75%);
+  mix-blend-mode:color; opacity:.62;
+}
+.hero::after{ /* фото плавно растворяется в тёмный фон карточки */
+  content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    transparent 30%,
+    color-mix(in srgb, var(--surface) 60%, transparent) 74%,
+    var(--surface) 100%);
+}
+
+/* ─────────── Монограмма (на стыке фото и карточки) ─────────── */
+.mono{
+  width:60px; height:60px; margin:-42px auto 16px; position:relative; z-index:2;
+}
+.mono-ring{
+  position:absolute; inset:-7px; border-radius:50%;
+  border:1.5px dashed color-mix(in srgb, var(--accent) 40%, transparent);
+  animation:spin 18s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.mono-c{
+  width:60px; height:60px; border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), color-mix(in srgb,var(--accent) 70%,#000));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:26px;
+  color:var(--on-accent);
+  box-shadow:0 10px 26px rgba(var(--shadow),.40), 0 0 0 4px var(--surface), inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+/* ─────────── Имя / роль ─────────── */
+.name{
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:27px; font-weight:600; letter-spacing:.01em; line-height:1.15;
+  margin-bottom:6px;
+}
+.role{
+  font-family:'Playfair Display',serif; font-style:italic; font-weight:500;
+  font-size:17px; color:var(--text2); line-height:1.35; margin-bottom:9px;
+}
+.role em{ color:var(--accent3); font-style:italic; }
+.tagline{
+  font-size:12px; color:var(--text3); line-height:1.5; margin:0 auto;
+  letter-spacing:.04em; max-width:280px;
+}
+
+/* золотая линия-разделитель */
+.sep{
+  width:54px; height:2px; margin:22px auto;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  border-radius:2px;
+}
+
+/* ─────────── Услуги ─────────── */
+.services{ display:flex; flex-direction:column; gap:10px; text-align:left; margin-bottom:26px; }
+.srv{
+  display:flex; align-items:center; gap:13px;
+  background:var(--surface2); border:1px solid var(--line);
+  border-radius:16px; padding:11px 14px;
+  transition:transform .25s, box-shadow .25s, border-color .25s;
+}
+.srv:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(var(--shadow),.12);
+  border-color:color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+.srv-ic{
+  width:38px; height:38px; flex-shrink:0; border-radius:11px;
+  display:flex; align-items:center; justify-content:center; font-size:19px;
+  background:color-mix(in srgb, var(--accent) 12%, var(--surface));
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.srv-tx{ display:flex; flex-direction:column; gap:1px; }
+.srv-t{ font-size:14.5px; font-weight:650; color:var(--text); }
+.srv-s{ font-size:12px; color:var(--text3); }
+
+/* ─────────── CTA ─────────── */
+.cta{
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  width:100%; padding:15px 24px; margin-bottom:18px;
+  background:linear-gradient(135deg, var(--accent), color-mix(in srgb,var(--accent) 80%,#000));
+  color:var(--on-accent); text-decoration:none;
+  border-radius:15px; font-size:15px; font-weight:650; letter-spacing:.01em;
+  box-shadow:0 8px 22px rgba(var(--shadow),.34);
+  position:relative; overflow:hidden;
+  transition:transform .25s, box-shadow .25s;
+}
+.cta:hover{ transform:translateY(-2px); box-shadow:0 12px 30px rgba(var(--shadow),.45); }
+.cta:active{ transform:scale(.98); }
+.cta svg{ width:18px; height:18px; }
+
+/* ─────────── Контакты-иконки ─────────── */
+.contacts{ display:flex; gap:12px; justify-content:center; margin-bottom:20px; }
+.con{
+  width:46px; height:46px; border-radius:13px;
+  background:var(--surface2); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; text-decoration:none;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s, border-color .28s;
+}
+.con:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 22px rgba(var(--shadow),.22);
+  border-color:color-mix(in srgb, var(--accent) 40%, var(--line));
+}
+.con svg{ width:22px; height:22px; }
+.con svg *{ fill:var(--accent); }
+/* контурная иконка Instagram */
+.con-ig svg rect, .con-ig svg circle{ fill:none; stroke:var(--accent); }
+.con-ig svg .dot{ fill:var(--accent); stroke:none; }
+
+/* ─────────── Статус ─────────── */
+.status{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:13px; color:var(--text2); font-weight:550;
+}
+.dot{
+  width:8px; height:8px; border-radius:50%; background:var(--accent2);
+  box-shadow:0 0 0 0 color-mix(in srgb, var(--accent2) 70%, transparent);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--accent2) 55%, transparent); }
+  70%{ box-shadow:0 0 0 7px transparent; }
+  100%{ box-shadow:0 0 0 0 transparent; }
+}
+
+.foot{
+  margin-top:18px; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--text3);
+}
+
+@media(max-width:430px){
+  .card{ padding:34px 22px 28px; }
+  .name{ font-size:26px; }
+}
+</style>
+</head>
+<body>
+
+  <!-- Карточка -->
+  <main class="card">
+    <div class="hero">
+      <img src="photo%20for%20site_cr.jpg" alt="Светлана — цифровые системы">
+    </div>
+
+    <div class="mono">
+      <div class="mono-ring"></div>
+      <div class="mono-c">S</div>
+    </div>
+
+    <h1 class="name">Светлана</h1>
+    <p class="role">создаю <em>цифровые системы</em></p>
+    <p class="tagline">сайты · лендинги · веб-приложения · квизы</p>
+
+    <div class="sep"></div>
+
+    <div class="services">
+      <div class="srv">
+        <div class="srv-ic">🌐</div>
+        <div class="srv-tx"><div class="srv-t">Сайты под ключ</div><div class="srv-s">от макета до домена</div></div>
+      </div>
+      <div class="srv">
+        <div class="srv-ic">🚀</div>
+        <div class="srv-tx"><div class="srv-t">Лендинги</div><div class="srv-s">скорость и конверсия</div></div>
+      </div>
+      <div class="srv">
+        <div class="srv-ic">⚙️</div>
+        <div class="srv-tx"><div class="srv-t">Веб-приложения</div><div class="srv-s">логика и интеграции</div></div>
+      </div>
+      <div class="srv">
+        <div class="srv-ic">🎯</div>
+        <div class="srv-tx"><div class="srv-t">Квизы</div><div class="srv-s">лиды на автомате</div></div>
+      </div>
+    </div>
+
+    <a href="https://my-website-bay-psi.vercel.app/#contact" target="_blank" rel="noopener" class="cta">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Написать мне
+    </a>
+
+    <div class="contacts">
+      <a href="https://t.me/Vet1ana" target="_blank" rel="noopener" class="con" title="Telegram">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.883 7.03l-1.73 8.152c-.13.576-.47.716-.951.445l-2.627-1.936-1.269 1.22c-.14.14-.259.259-.531.259l.19-2.696 4.9-4.43c.213-.189-.046-.294-.33-.105L7.86 15.098 5.27 14.3c-.567-.176-.578-.567.12-.84l9.02-3.475c.473-.176.886.108.73.83z"/></svg>
+      </a>
+      <a href="https://instagram.com/svetlanadevja" target="_blank" rel="noopener" class="con con-ig" title="Instagram — @svetlanadevja">
+        <svg viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke-width="2"/><circle cx="12" cy="12" r="3.5" stroke-width="2"/><circle class="dot" cx="17.5" cy="6.5" r="1.3"/></svg>
+      </a>
+      <a href="https://wa.me/375299967740" target="_blank" rel="noopener" class="con" title="WhatsApp +375 29 996 77 40">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.888.523 3.654 1.432 5.163L2 22l4.96-1.397A9.944 9.944 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm-3.54 6.5c.197 0 .416.012.577.012.18 0 .424-.07.662.503l.831 2.083c.11.275.04.612-.16.851l-.385.432c-.158.187-.19.356-.063.556.658 1.188 1.567 2.1 2.756 2.766.2.117.358.09.514-.062l.432-.432c.22-.219.551-.3.836-.164l2.12.836c.57.226.502.482.502.66 0 .155-.04.909-.483 1.53-.497.694-1.47 1.054-2.247 1.054-.8 0-1.582-.178-3.332-1.018-2.62-1.284-4.16-3.64-4.3-3.832-.14-.19-1.042-1.4-1.042-2.67s.65-1.9.882-2.154c.232-.252.503-.31.67-.31z"/></svg>
+      </a>
+    </div>
+
+    <div class="status"><span class="dot"></span>Открыта к новым проектам</div>
+
+    <div class="foot">Svetlana Dev · @Vet1ana</div>
+  </main>
+
+</body>
+</html>
