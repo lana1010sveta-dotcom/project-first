@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1b1033">
+<title>Маэстро — поймай ноту</title>
+<style>
+  :root{
+    --bg:#1b1033; --bg2:#2a1854; --card:#241546; --ink:#f4eefe;
+    --muted:#b8a8e0; --accent:#ff5da2; --accent2:#7c5cff;
+    --good:#34e0a1; --high:#ff9d5c; --low:#5cc8ff; --line:#3a2a66;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%;}
+  body{
+    background:radial-gradient(120% 90% at 50% -10%, var(--bg2), var(--bg) 60%);
+    color:var(--ink); font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    display:flex; flex-direction:column; align-items:center;
+    padding:16px 16px 28px; min-height:100%; overscroll-behavior:none;
+  }
+  h1{font-size:20px; margin:6px 0 2px; letter-spacing:.2px;}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 14px; text-align:center;}
+  .maestro{font-size:40px; line-height:1; margin-top:6px;}
+  .card{
+    width:100%; max-width:440px; background:var(--card);
+    border:1px solid var(--line); border-radius:20px; padding:18px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35); margin-bottom:14px;
+  }
+  .target{
+    text-align:center; padding:10px 0 4px;
+  }
+  .target .label{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:1px;}
+  .target .note{font-size:54px; font-weight:700; margin:2px 0; }
+  .target .hz{color:var(--muted); font-size:12px;}
+  canvas{width:100%; height:180px; display:block; border-radius:14px;
+    background:linear-gradient(180deg,#1a1030,#150c28); border:1px solid var(--line);}
+  .verdict{
+    text-align:center; font-size:22px; font-weight:700; min-height:30px; margin:12px 0 2px;
+  }
+  .cents{text-align:center; color:var(--muted); font-size:13px; min-height:18px;}
+  .live{text-align:center; color:var(--muted); font-size:13px; margin-top:6px; min-height:18px;}
+  .row{display:flex; gap:10px; margin-top:14px;}
+  button{
+    flex:1; border:none; border-radius:14px; padding:15px 12px; font-size:16px;
+    font-weight:600; color:#fff; cursor:pointer; transition:transform .05s, opacity .2s;
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+  }
+  button.sec{background:#34235e; color:var(--ink); border:1px solid var(--line);}
+  button:active{transform:scale(.97);}
+  button:disabled{opacity:.4; cursor:default;}
+  .full{width:100%;}
+  .hint{color:var(--muted); font-size:12px; text-align:center; margin-top:12px; line-height:1.5;}
+  .pill{display:inline-block; background:#34235e; border:1px solid var(--line);
+    border-radius:999px; padding:4px 10px; font-size:12px; margin:3px 3px 0; color:var(--muted);}
+  .scale-row{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:10px;}
+  .deg{
+    border:1px solid var(--line); background:#2c1c54; color:var(--ink);
+    border-radius:10px; padding:8px 0; font-size:14px; min-width:42px; text-align:center; cursor:pointer;
+  }
+  .deg.active{background:linear-gradient(135deg,var(--accent2),var(--accent)); border-color:transparent;}
+  #start{font-size:18px; padding:18px;}
+  .footer{color:#6b5a99; font-size:11px; text-align:center; margin-top:6px;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+  <div class="maestro">🎺🧙‍♂️</div>
+  <h1>Маэстро: поймай ноту</h1>
+  <p class="sub">Прототип ядра — проверяем слух голосом и инструментом</p>
+
+  <!-- старт -->
+  <div class="card" id="startCard">
+    <p class="hint" style="font-size:14px; color:var(--ink);">
+      Привет, Лёня! Я — Маэстро. Сыграю ноту, а ты <b>спой её</b> или <b>сыграй</b>
+      на кларнете/фортепиано. Я покажу, попал ли ты точно.
+    </p>
+    <button id="start" class="full">▶ Включить микрофон и начать</button>
+    <p class="hint">Нужно разрешить доступ к микрофону. Лучше в наушниках и в тихой комнате.</p>
+  </div>
+
+  <!-- игра -->
+  <div class="card hidden" id="gameCard">
+    <div class="target">
+      <div class="label">Спой или сыграй эту ноту</div>
+      <div class="note" id="tNote">—</div>
+      <div class="hz" id="tHz"></div>
+    </div>
+
+    <div class="scale-row" id="scaleRow"></div>
+
+    <div class="row">
+      <button id="playBtn" class="sec">🔊 Послушать</button>
+      <button id="droneBtn" class="sec">🎵 Дрон: выкл</button>
+    </div>
+
+    <canvas id="track"></canvas>
+
+    <div class="verdict" id="verdict"></div>
+    <div class="cents" id="cents"></div>
+    <div class="live" id="live">нажми «Слушать меня» и пой…</div>
+
+    <div class="row">
+      <button id="listenBtn">🎤 Слушать меня</button>
+      <button id="nextBtn" class="sec">🔀 Другая нота</button>
+    </div>
+
+    <p class="hint">
+      Зелёная зона — цель. Точка — твой звук. Держи точку в зелёном.<br>
+      Октавой выше/ниже тоже засчитается как верная нота 👍
+    </p>
+  </div>
+
+  <p class="footer">repetitor-music · прототип ядра v0.1 · работает офлайн</p>
+
+<script>
+"use strict";
+
+// ---------- Музыкальная база (фиксированное До = C) ----------
+const RU = ["До","До#","Ре","Ре#","Ми","Фа","Фа#","Соль","Соль#","Ля","Ля#","Си"];
+const A4 = 440;
+// до-мажор, удобный диапазон детского голоса: До1(C4)…До2(C5)
+const TONIC_MIDI = 60; // C4
+const SCALE = [0,2,4,5,7,9,11,12]; // I..VIII ступени мажора
+const DEG_NAMES = ["I","II","III","IV","V","VI","VII","VIII"];
+
+function midiToFreq(m){ return A4 * Math.pow(2,(m-69)/12); }
+function freqToMidiFloat(f){ return 69 + 12*Math.log2(f/A4); }
+function midiName(m){ const n=Math.round(m); return RU[((n%12)+12)%12] + (Math.floor(n/12)-1); }
+
+// ---------- Состояние ----------
+let actx=null, analyser=null, micStream=null, buf=null;
+let droneOsc=null, droneGain=null, droneOn=false;
+let listening=false, rafId=null;
+let target = { degIdx:2, midi:TONIC_MIDI+SCALE[2], freq:0 };
+let history=[]; // последние центы для вердикта
+const W=2048;
+
+// ---------- DOM ----------
+const $=s=>document.querySelector(s);
+const startCard=$("#startCard"), gameCard=$("#gameCard");
+const tNote=$("#tNote"), tHz=$("#tHz"), scaleRow=$("#scaleRow");
+const verdictEl=$("#verdict"), centsEl=$("#cents"), liveEl=$("#live");
+const canvas=$("#track"), ctx=canvas.getContext("2d");
+
+// ---------- Ступени-кнопки ----------
+SCALE.forEach((semi,i)=>{
+  const d=document.createElement("div");
+  d.className="deg"+(i===target.degIdx?" active":"");
+  d.textContent=DEG_NAMES[i];
+  d.onclick=()=>setTarget(i);
+  scaleRow.appendChild(d);
+});
+
+function setTarget(i){
+  target.degIdx=i;
+  target.midi=TONIC_MIDI+SCALE[i];
+  target.freq=midiToFreq(target.midi);
+  tNote.textContent=midiName(target.midi);
+  tHz.textContent=Math.round(target.freq)+" Гц · "+DEG_NAMES[i]+" ступень";
+  [...scaleRow.children].forEach((c,k)=>c.classList.toggle("active",k===i));
+  resetVerdict();
+  playTarget();
+}
+function resetVerdict(){ verdictEl.textContent=""; centsEl.textContent=""; history=[]; clearTrack(); }
+
+// ---------- Аудио init ----------
+async function initAudio(){
+  actx = new (window.AudioContext||window.webkitAudioContext)();
+  micStream = await navigator.mediaDevices.getUserMedia({audio:{
+    echoCancellation:false, noiseSuppression:false, autoGainControl:false
+  }});
+  const src = actx.createMediaStreamSource(micStream);
+  analyser = actx.createAnalyser();
+  analyser.fftSize = W;
+  buf = new Float32Array(analyser.fftSize);
+  src.connect(analyser);
+}
+
+// ---------- Проигрывание ноты ----------
+function playTone(freq, dur=1.0, type="triangle"){
+  const o=actx.createOscillator(), g=actx.createGain();
+  o.type=type; o.frequency.value=freq;
+  g.gain.value=0;
+  o.connect(g); g.connect(actx.destination);
+  const t=actx.currentTime;
+  g.gain.linearRampToValueAtTime(0.25, t+0.03);
+  g.gain.setValueAtTime(0.25, t+dur-0.1);
+  g.gain.linearRampToValueAtTime(0, t+dur);
+  o.start(t); o.stop(t+dur+0.02);
+}
+function playTarget(){ playTone(target.freq, 1.1); }
+
+// дрон-якорь тоники (бурдон)
+function toggleDrone(){
+  if(droneOn){ stopDrone(); }
+  else{
+    droneGain=actx.createGain(); droneGain.gain.value=0.0;
+    droneOsc=actx.createOscillator(); droneOsc.type="sawtooth";
+    droneOsc.frequency.value=midiToFreq(TONIC_MIDI-12); // тоника октавой ниже, мягкая опора
+    const lp=actx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=600;
+    droneOsc.connect(lp); lp.connect(droneGain); droneGain.connect(actx.destination);
+    droneOsc.start();
+    droneGain.gain.linearRampToValueAtTime(0.12, actx.currentTime+0.1);
+    droneOn=true;
+  }
+  $("#droneBtn").textContent = droneOn ? "🎵 Дрон: вкл" : "🎵 Дрон: выкл";
+}
+function stopDrone(){
+  if(!droneOn)return;
+  try{ droneGain.gain.linearRampToValueAtTime(0, actx.currentTime+0.1);
+       droneOsc.stop(actx.currentTime+0.15);}catch(e){}
+  droneOn=false;
+}
+
+// ---------- Детектор высоты: автокорреляция + парабола ----------
+function autoCorrelate(b, rate){
+  const SIZE=b.length;
+  let rms=0; for(let i=0;i<SIZE;i++){ rms+=b[i]*b[i]; }
+  rms=Math.sqrt(rms/SIZE);
+  if(rms<0.008) return {f:-1, rms};            // тихо
+  // обрезаем края по порогу
+  let r1=0, r2=SIZE-1, thr=0.2;
+  for(let i=0;i<SIZE/2;i++){ if(Math.abs(b[i])<thr){r1=i;break;} }
+  for(let i=1;i<SIZE/2;i++){ if(Math.abs(b[SIZE-i])<thr){r2=SIZE-i;break;} }
+  const buf2=b.slice(r1,r2), n=buf2.length;
+  const c=new Float32Array(n);
+  for(let i=0;i<n;i++){ let s=0; for(let j=0;j<n-i;j++) s+=buf2[j]*buf2[j+i]; c[i]=s; }
+  let d=0; while(d<n-1 && c[d]>c[d+1]) d++;
+  let maxv=-1, maxp=-1;
+  for(let i=d;i<n;i++){ if(c[i]>maxv){ maxv=c[i]; maxp=i; } }
+  if(maxp<=0) return {f:-1, rms};
+  // парабольная интерполяция вершины
+  let T0=maxp;
+  const x1=c[T0-1]||0, x2=c[T0], x3=c[T0+1]||0;
+  const a=(x1+x3-2*x2)/2, bb=(x3-x1)/2;
+  if(a) T0 = T0 - bb/(2*a);
+  const f=rate/T0;
+  if(f<60||f>1600) return {f:-1, rms};
+  return {f, rms};
+}
+
+// фолдинг октав: разницу в полутонах сворачиваем к ближайшей октаве
+function centsToTarget(freq){
+  const semis = freqToMidiFloat(freq) - freqToMidiFloat(target.freq);
+  const oct = Math.round(semis/12);
+  const folded = semis - 12*oct;      // -6..+6 полутонов
+  return { cents: folded*100, octaveOff: oct };
+}
+
+// ---------- Цикл прослушивания ----------
+function startListen(){
+  if(listening) return;
+  listening=true; history=[];
+  $("#listenBtn").textContent="⏹ Стоп";
+  liveEl.textContent="пой…";
+  if(actx.state==="suspended") actx.resume();
+  loop();
+}
+function stopListen(){
+  listening=false;
+  $("#listenBtn").textContent="🎤 Слушать меня";
+  cancelAnimationFrame(rafId);
+  finalVerdict();
+}
+
+let trackPts=[]; // {x,cents,ok}
+function loop(){
+  analyser.getFloatTimeDomainData(buf);
+  const {f,rms}=autoCorrelate(buf, actx.sampleRate);
+  if(f>0){
+    const {cents,octaveOff}=centsToTarget(f);
+    history.push(cents);
+    if(history.length>40) history.shift();
+    drawTrack(cents);
+    const nm=midiName(freqToMidiFloat(f));
+    let oc = octaveOff===0 ? "" : (octaveOff>0?" (на октаву выше)":" (на октаву ниже)");
+    liveEl.textContent = `ты: ${nm} · ${cents>0?"+":""}${Math.round(cents)}¢${oc}`;
+    liveVerdict(cents);
+  } else {
+    drawTrack(null);
+    liveEl.textContent="…не слышу звук, пой громче";
+  }
+  if(listening) rafId=requestAnimationFrame(loop);
+}
+
+function liveVerdict(cents){
+  const a=Math.abs(cents);
+  if(a<20){ verdictEl.textContent="🎯 Чисто!"; verdictEl.style.color="var(--good)"; }
+  else if(cents>0){ verdictEl.textContent="⬆ Выше"; verdictEl.style.color="var(--high)"; }
+  else { verdictEl.textContent="⬇ Ниже"; verdictEl.style.color="var(--low)"; }
+  centsEl.textContent = (cents>0?"+":"")+Math.round(cents)+" центов от цели";
+}
+
+function finalVerdict(){
+  if(!history.length){ liveEl.textContent="не услышал звук — попробуй ещё раз"; return; }
+  // берём медиану последних значений (устойчиво к выбросам)
+  const arr=[...history].sort((x,y)=>x-y);
+  const med=arr[Math.floor(arr.length/2)];
+  const a=Math.abs(med);
+  if(a<20){ verdictEl.textContent="🎯 Чисто! Молодец!"; verdictEl.style.color="var(--good)"; }
+  else if(a<45){ verdictEl.textContent=(med>0?"Почти! Чуть выше ⬆":"Почти! Чуть ниже ⬇"); verdictEl.style.color="var(--high)"; }
+  else { verdictEl.textContent=(med>0?"Выше цели ⬆":"Ниже цели ⬇"); verdictEl.style.color=(med>0?"var(--high)":"var(--low)"); }
+  centsEl.textContent="итог: "+(med>0?"+":"")+Math.round(med)+" центов (медиана)";
+}
+
+// ---------- Канвас ----------
+function fitCanvas(){
+  const r=canvas.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  canvas.width=r.width*dpr; canvas.height=r.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  clearTrack();
+}
+function clearTrack(){ trackPts=[]; drawBase(); }
+const RANGE=600; // ±600 центов по вертикали
+function yFor(cents, h){ return h/2 - (cents/RANGE)*(h/2-14); }
+function drawBase(){
+  const r=canvas.getBoundingClientRect(), w=r.width, h=r.height;
+  ctx.clearRect(0,0,w,h);
+  // зелёная зона цели ±20¢
+  const yTop=yFor(20,h), yBot=yFor(-20,h);
+  ctx.fillStyle="rgba(52,224,161,.18)";
+  ctx.fillRect(0,yTop,w,yBot-yTop);
+  ctx.strokeStyle="rgba(52,224,161,.7)"; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
+  // подписи
+  ctx.fillStyle="rgba(255,255,255,.45)"; ctx.font="11px sans-serif";
+  ctx.fillText("цель", 6, h/2-6);
+  ctx.fillText("выше", 6, 14);
+  ctx.fillText("ниже", 6, h-6);
+}
+function drawTrack(cents){
+  const r=canvas.getBoundingClientRect(), w=r.width, h=r.height;
+  trackPts.push(cents);
+  const maxN=Math.floor(w/4);
+  if(trackPts.length>maxN) trackPts.shift();
+  drawBase();
+  const step=w/maxN;
+  for(let i=0;i<trackPts.length;i++){
+    const c=trackPts[i]; if(c===null) continue;
+    const x=i*step, y=yFor(Math.max(-RANGE,Math.min(RANGE,c)),h);
+    const ok=Math.abs(c)<20;
+    ctx.fillStyle = ok? "#34e0a1" : (c>0? "#ff9d5c":"#5cc8ff");
+    ctx.beginPath(); ctx.arc(x,y, i===trackPts.length-1?5:3, 0, 6.283); ctx.fill();
+  }
+}
+
+// ---------- События ----------
+$("#start").onclick=async()=>{
+  try{
+    $("#start").disabled=true; $("#start").textContent="…подключаю микрофон";
+    await initAudio();
+    startCard.classList.add("hidden");
+    gameCard.classList.remove("hidden");
+    fitCanvas();
+    setTarget(target.degIdx);
+  }catch(e){
+    $("#start").disabled=false; $("#start").textContent="▶ Включить микрофон и начать";
+    alert("Не удалось включить микрофон: "+e.message+"\nРазреши доступ и попробуй снова.");
+  }
+};
+$("#playBtn").onclick=()=>{ if(actx.state==="suspended")actx.resume(); playTarget(); };
+$("#droneBtn").onclick=()=>{ if(actx.state==="suspended")actx.resume(); toggleDrone(); };
+$("#listenBtn").onclick=()=>{ listening? stopListen(): startListen(); };
+$("#nextBtn").onclick=()=>{
+  let i; do{ i=Math.floor(Math.random()*SCALE.length);}while(i===target.degIdx);
+  if(listening) stopListen();
+  setTarget(i);
+};
+window.addEventListener("resize", ()=>{ if(!gameCard.classList.contains("hidden")) fitCanvas(); });
+</script>
+</body>
+</html>
