@@ -229,6 +229,7 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 content = await generator.generate_post_with_image(topic_with_instruction)
             except Exception as e:
                 await update.message.reply_text(f"Ошибка генерации: {e}")
+                await update.message.reply_text("Попробуй другую инструкцию или отправь готовый текст.")
                 return
             new_post_id = await storage.save_post(
                 plan_id=post["plan_id"],
@@ -253,10 +254,10 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
                 await storage.update_post_status(post_id, "published")
                 await update.message.reply_text("✅ Опубликовано с вашим текстом!")
+                _state["waiting_for"] = None
+                _state["pending_post_id"] = None
             except Exception as e:
                 await update.message.reply_text(f"Ошибка публикации: {e}")
-            _state["waiting_for"] = None
-            _state["pending_post_id"] = None
 
 
 def build_app() -> Application:
