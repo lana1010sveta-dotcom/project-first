@@ -45,12 +45,19 @@ async def _send_post_for_approval(chat_id: int, post: dict, context: ContextType
     if len(caption) > 1024:
         caption = caption[:1020] + "..."
 
-    with open(post["image_path"], "rb") as img:
-        await context.bot.send_photo(
+    try:
+        with open(post["image_path"], "rb") as img:
+            await context.bot.send_photo(
+                chat_id=chat_id,
+                photo=img,
+                caption=caption,
+                parse_mode="HTML",
+                reply_markup=keyboard,
+            )
+    except FileNotFoundError:
+        await context.bot.send_message(
             chat_id=chat_id,
-            photo=img,
-            caption=caption,
-            parse_mode="HTML",
+            text=f"⚠️ Изображение не найдено: {post['image_path']}\n\n{caption}",
             reply_markup=keyboard,
         )
     _state["pending_post_id"] = post["id"]
@@ -159,6 +166,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data.startswith("approve:"):
         post_id = int(data.split(":")[1])
         post = await storage.get_post(post_id)
+        await storage.update_post_status(post_id, "approved")
         try:
             await publisher.publish_post(
                 text=post["text"],
@@ -170,9 +178,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await storage.update_plan_status(post["plan_id"], "published")
             await query.message.edit_reply_markup(None)
             await query.message.reply_text("✅ Опубликовано!")
+            _state["pending_post_id"] = None
         except Exception as e:
             await query.message.reply_text(f"Ошибка публикации: {e}")
-        _state["pending_post_id"] = None
+            # Status left as "approved" — user can retry by clicking ✅ again
 
     elif data.startswith("edit:"):
         post_id = int(data.split(":")[1])

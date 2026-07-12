@@ -48,4 +48,9 @@ async def generate_monthly_plan(month: str) -> list[dict]:
             if topic:
                 topics.append({"topic": topic, "description": description})
 
+    if len(topics) < 10:
+        raise ValueError(
+            f"Плanner вернул только {len(topics)} тем (ожидается минимум 10). "
+            "Попробуй /plan ещё раз."
+        )
     return topics

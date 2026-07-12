@@ -79,7 +79,9 @@ async def test_approve_callback_publishes_post(tmp_path):
     mock_publisher.publish_post.assert_called_once_with(
         text="Текст", hashtags="#тег", image_path=str(img)
     )
-    mock_storage.update_post_status.assert_called_once_with(7, "published")
+    # F1 fix: update_post_status now called twice — "approved" before publish, "published" on success
+    mock_storage.update_post_status.assert_any_call(7, "approved")
+    mock_storage.update_post_status.assert_any_call(7, "published")
 
 
 @pytest.mark.asyncio

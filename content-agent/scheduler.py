@@ -48,6 +48,14 @@ async def _trigger_monthly_plan(app: Application):
 
         # Import here to avoid circular import
         from bot import _state
+
+        if _state.get("waiting_for") is not None:
+            await app.bot.send_message(
+                chat_id=admin_id,
+                text="📅 Новый план готов, но ты сейчас в другом режиме. Заверши текущее действие, потом напиши /plan.",
+            )
+            return
+
         _state["pending_plan_topics"] = list(zip(ids, [t["topic"] for t in topics]))
         _state["waiting_for"] = "plan_selection"
 
