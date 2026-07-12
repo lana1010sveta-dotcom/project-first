@@ -275,8 +275,16 @@ def build_app() -> Application:
 async def main():
     await storage.init_db()
     app = build_app()
+
+    from scheduler import setup_scheduler
+    scheduler = setup_scheduler(app)
+    scheduler.start()
+
     print("Agent Produsser started.")
-    await app.run_polling(drop_pending_updates=True)
+    try:
+        await app.run_polling(drop_pending_updates=True)
+    finally:
+        scheduler.shutdown()
 
 
 if __name__ == "__main__":
