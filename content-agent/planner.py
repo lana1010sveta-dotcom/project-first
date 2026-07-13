@@ -1,8 +1,11 @@
 import os
 from pathlib import Path
-from anthropic import AsyncAnthropic
+from openai import AsyncOpenAI
 
-anthropic_client = AsyncAnthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+openrouter_client = AsyncOpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1",
+)
 
 AUDIENCE_PATH = Path(__file__).parent / "audience.md"
 
@@ -18,8 +21,8 @@ async def generate_monthly_plan(month: str) -> list[dict]:
     """
     audience_content = AUDIENCE_PATH.read_text(encoding="utf-8")
 
-    response = await anthropic_client.messages.create(
-        model="claude-sonnet-5",
+    response = await openrouter_client.chat.completions.create(
+        model="anthropic/claude-sonnet-4-5",
         max_tokens=4096,
         messages=[
             {
@@ -40,7 +43,7 @@ async def generate_monthly_plan(month: str) -> list[dict]:
     )
 
     topics = []
-    for line in response.content[0].text.strip().split("\n"):
+    for line in response.choices[0].message.content.strip().split("\n"):
         if "ТЕМА:" in line and "ОПИСАНИЕ:" in line:
             parts = line.split("|")
             topic = parts[0].replace("ТЕМА:", "").strip()

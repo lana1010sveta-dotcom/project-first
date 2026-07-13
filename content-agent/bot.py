@@ -45,19 +45,28 @@ async def _send_post_for_approval(chat_id: int, post: dict, context: ContextType
     if len(caption) > 1024:
         caption = caption[:1020] + "..."
 
-    try:
-        with open(post["image_path"], "rb") as img:
-            await context.bot.send_photo(
+    if post.get("image_path"):
+        try:
+            with open(post["image_path"], "rb") as img:
+                await context.bot.send_photo(
+                    chat_id=chat_id,
+                    photo=img,
+                    caption=caption,
+                    parse_mode="HTML",
+                    reply_markup=keyboard,
+                )
+        except FileNotFoundError:
+            await context.bot.send_message(
                 chat_id=chat_id,
-                photo=img,
-                caption=caption,
+                text=caption,
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
-    except FileNotFoundError:
+    else:
         await context.bot.send_message(
             chat_id=chat_id,
-            text=f"⚠️ Изображение не найдено: {post['image_path']}\n\n{caption}",
+            text=caption,
+            parse_mode="HTML",
             reply_markup=keyboard,
         )
     _state["pending_post_id"] = post["id"]
@@ -269,8 +278,28 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text(f"Ошибка публикации: {e}")
 
 
+async def _post_init(app: Application) -> None:
+    await storage.init_db()
+    from scheduler import setup_scheduler
+    scheduler = setup_scheduler(app)
+    scheduler.start()
+    app.bot_data["scheduler"] = scheduler
+
+
+async def _post_shutdown(app: Application) -> None:
+    scheduler = app.bot_data.get("scheduler")
+    if scheduler:
+        scheduler.shutdown()
+
+
 def build_app() -> Application:
-    app = Application.builder().token(os.environ["BOT_TOKEN"]).build()
+    app = (
+        Application.builder()
+        .token(os.environ["BOT_TOKEN"])
+        .post_init(_post_init)
+        .post_shutdown(_post_shutdown)
+        .build()
+    )
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("plan", cmd_plan))
@@ -281,20 +310,6 @@ def build_app() -> Application:
     return app
 
 
-async def main():
-    await storage.init_db()
-    app = build_app()
-
-    from scheduler import setup_scheduler
-    scheduler = setup_scheduler(app)
-    scheduler.start()
-
-    print("Agent Produsser started.")
-    try:
-        await app.run_polling(drop_pending_updates=True)
-    finally:
-        scheduler.shutdown()
-
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("Agent Produsser started.")
+    build_app().run_polling(drop_pending_updates=True)

@@ -1,10 +1,12 @@
 import os
 import httpx
 from pathlib import Path
-from anthropic import AsyncAnthropic
 from openai import AsyncOpenAI
 
-anthropic_client = AsyncAnthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+openrouter_client = AsyncOpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1",
+)
 openai_client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 IMAGES_DIR = Path(__file__).parent / "images"
@@ -27,8 +29,8 @@ async def generate_post(topic: str) -> dict:
     """
     audience_context = _load_audience_context()
 
-    response = await anthropic_client.messages.create(
-        model="claude-sonnet-5",
+    response = await openrouter_client.chat.completions.create(
+        model="anthropic/claude-sonnet-4-5",
         max_tokens=1024,
         messages=[
             {
@@ -53,7 +55,7 @@ async def generate_post(topic: str) -> dict:
         ],
     )
 
-    raw = response.content[0].text.strip()
+    raw = response.choices[0].message.content.strip()
     title, text, hashtags = "", [], ""
     section = None
 
@@ -116,5 +118,8 @@ async def generate_post_with_image(topic: str) -> dict:
         {title, text, hashtags, image_url, image_path}
     """
     post = await generate_post(topic)
-    image_url, image_path = await generate_image(topic, post["title"])
+    try:
+        image_url, image_path = await generate_image(topic, post["title"])
+    except Exception:
+        image_url, image_path = "", ""
     return {**post, "image_url": image_url, "image_path": image_path}
