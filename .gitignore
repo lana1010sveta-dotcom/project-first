@@ -7,3 +7,4 @@ __pycache__/
 pitch-parser/*.json
 !pitch-parser/package.json
 /obraz/
+cloudflared.exe
